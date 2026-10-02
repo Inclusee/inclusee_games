@@ -1,0 +1,32 @@
+#Title: Copy-me template
+#Date: 2026-09-26
+#
+# ---------------------------------------------------------------------------
+#  HOW TO MAKE A NEW PUZZLE
+#   1. Copy this file into the puzzles folder.
+#   2. Rename it with the date you want it to appear, e.g. 2026-10-01.txt
+#      (the game picks the file that matches today's date, and keeps using the
+#       most recent one if today's is missing — so it never shows a blank page)
+#   3. Replace the clues below. Keep the "=" between clue and answer.
+#   4. Save the file. That's the whole process.
+#
+#  TIPS FROM THE ACTIVITY TEAM
+#    - Write clues in plain English for a general audience, no trick questions.
+#    - Mix lengths: a couple of longer answers (7-9 letters) plus several short
+#      ones (3-5 letters) makes a much better grid than 12 long words.
+#    - Keep clues under about 100 characters so they fit on one line on a tablet.
+#    - Local places, first names, seasons, food and garden words go down well.
+# ---------------------------------------------------------------------------
+
+The season after winter = SPRING
+A bird that laughs and lives in the bush = KOOKABURRA
+You spread this on toast = BUTTER
+The number of days in a week = SEVEN
+A cold treat on a hot day = ICECREAM
+Something you wear on your feet inside = SLIPPERS
+The biggest animal in the sea = WHALE
+You open this to let in fresh air = WINDOW
+A cup of tea needs one of these = TEABAG
+Aussie slang for a barbecue = BARBIE
+Rain falling in small drops = DRIZZLE
+A place to sit in the garden = BENCH

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inclusee Games</title>
+<meta name="description" content="Small, friendly games from Inclusee. Large print, no timers, no pressure.">
+<meta name="theme-color" content="#0b4f7a">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../assets/inclusee-logo.png">
+<link rel="stylesheet" href="shared/inclusee-theme.css">
+<style>
+  .page { max-width: 900px; margin: 0 auto; padding: 1.2rem 1rem 3rem; }
+  .lead { font-size: 1.15rem; color: var(--ink-soft); margin: 0 0 1.4rem; }
+  .game-cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .game-card { display: flex; flex-direction: column; gap: 0.4rem; }
+  .game-card h2 { margin: 0; }
+  .game-card p { margin: 0; color: var(--ink-soft); }
+  .game-card .play { margin-top: 0.8rem; align-self: flex-start; text-decoration: none; display: inline-block;
+                     background: var(--brand); color: #fff; border-radius: var(--radius); padding: 0.7rem 1.3rem; font-weight: 600; }
+  .game-card .play:hover { background: #0167ad; }
+  .badge { display: inline-block; font-size: 0.85rem; font-weight: 700; padding: 0.15rem 0.6rem;
+           border-radius: 999px; background: var(--warn-tint); color: var(--warn); }
+  .soon { opacity: 0.85; }
+</style>
+</head>
+<body>
+
+<header class="app-bar">
+  <img class="logo" src="../assets/inclusee-logo.png" alt="Inclusee — Connecting Community">
+  <span class="app-name">Games</span>
+  <span class="spacer"></span>
+  <a href="https://app.inclusee.org">Back to Inclusee</a>
+</header>
+
+<div class="page">
+  <h1>Inclusee Games</h1>
+  <p class="lead">Small, friendly games to play on your own or with a group. Nothing is timed, nothing is lost, and everything can be made bigger.</p>
+
+  <div class="game-cards">
+    <section class="panel game-card">
+      <h2>Daily Crossword</h2>
+      <p>A new crossword every day, written by the Inclusee activity team. Big squares, clues you can read, and help whenever you want it.</p>
+      <a class="play" href="crossword/index.html">Play the crossword</a>
+    </section>
+
+    <section class="panel game-card soon">
+      <h2>Word Search <span class="badge">Coming soon</span></h2>
+      <p>Find the hidden words in a large-print grid. Good for a quiet five minutes.</p>
+    </section>
+
+    <section class="panel game-card soon">
+      <h2>Trivia Quiz <span class="badge">Coming soon</span></h2>
+      <p>Gentle multiple-choice questions, written to be played together in a group session.</p>
+    </section>
+
+    <section class="panel game-card soon">
+      <h2>Number Sudoku <span class="badge">Coming soon</span></h2>
+      <p>An easy daily number puzzle, with a hint button and plenty of space.</p>
+    </section>
+  </div>
+</div>
+
+</body>
+</html>

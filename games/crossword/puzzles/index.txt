@@ -1,0 +1,15 @@
+# ---------------------------------------------------------------------------
+#  puzzles/index.txt — the list of puzzles available on the server
+#
+#  THIS FILE IS OPTIONAL. The game looks for a file named after today's date
+#  (2026-09-25.txt for the 25th of September 2026) and, if it isn't there,
+#  works backwards up to three weeks. Add the dates here if you would rather
+#  load a whole batch a month ahead — the game picks the newest date that is
+#  not in the future.
+#
+#  One date per line. Anything after the date is a title for your own
+#  reference, and it only shows as the puzzle heading if the puzzle file
+#  itself has no #Title line.
+# ---------------------------------------------------------------------------
+
+2026-09-25  Around the House

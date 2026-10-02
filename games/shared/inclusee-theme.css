@@ -1,0 +1,189 @@
+/* ============================================================================
+   Inclusee Games — shared look and feel
+   ----------------------------------------------------------------------------
+   One place for the brand colours, type scale and contrast rules every game
+   uses. Colours were chosen for WCAG 2.2 AA/AAA contrast against their own
+   background, and every size is driven by --scale so the "Bigger text" button
+   in any game enlarges the whole page, not just the headings.
+   ========================================================================== */
+
+:root {
+  /* Brand — taken from the Inclusee Connect app icons and web manifest. */
+  --brand: #0175c2;
+  --brand-deep: #0b4f7a;          /* large solid areas, white text: 8.2:1 */
+  --brand-text: #0a5b96;          /* blue text on white: 7.1:1 */
+  --brand-tint: #eaf3fb;          /* selected answer background */
+  --brand-tint-strong: #cfe6f8;
+
+  /* Ink and paper */
+  --ink: #10151a;                 /* 17.4:1 on white */
+  --ink-soft: #46525e;            /* 8.0:1 on white */
+  --paper: #ffffff;
+  --paper-soft: #f5f8fb;
+  --line: #b9c6d3;
+  --line-strong: #7d8d9c;
+
+  /* Feedback — gentle, never alarming. */
+  --good: #1b6b4a;
+  --good-tint: #e6f4ec;
+  --warn: #8a5a00;
+  --warn-tint: #fdf3e0;
+  --bad: #a3231b;                 /* 7.2:1 on white */
+  --bad-tint: #fdeceb;
+
+  /* Rhythm */
+  --scale: 1;
+  --base-size: 20px;
+  --radius: 14px;
+  --radius-lg: 22px;
+  --gap: 1rem;
+  --shadow: 0 2px 4px rgba(16, 21, 26, 0.06), 0 8px 24px rgba(16, 21, 26, 0.08);
+  --font: "Segoe UI", Tahoma, Verdana, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* A dark screen for residents who find white glaring. Contrast is checked
+   against the panel colour, not against white. */
+body.dark {
+  --ink: #f2f6fa;                 /* 14.2:1 on the panel below */
+  --ink-soft: #c2ccd6;            /* 8.4:1 */
+  --paper: #18222c;
+  --paper-soft: #111922;
+  --brand-tint: #1d3a52;
+  --brand-tint-strong: #27506f;
+  --brand-text: #7cc0f0;          /* 7.4:1 on the panel */
+  --line: #4a5a69;
+  --line-strong: #8a9aa8;
+  --good: #7fd3a4;
+  --good-tint: #14301f;
+  --bad: #ff9d95;
+  --bad-tint: #3a1a18;
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+* { box-sizing: border-box; }
+
+html {
+  font-size: calc(var(--base-size) * var(--scale));
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font);
+  color: var(--ink);
+  background: var(--paper-soft);
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------------- app bar */
+
+.app-bar {
+  background: var(--brand-deep);
+  color: #ffffff;
+  padding: 0.7rem 1.1rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.app-bar .logo { height: 2.4rem; width: auto; }
+
+.app-bar .app-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+  letter-spacing: 0.01em;
+}
+
+.app-bar .spacer { flex: 1 1 auto; }
+
+.app-bar a {
+  color: #ffffff;
+  text-decoration: underline;
+  font-size: 1rem;
+  padding: 0.5rem 0.25rem;
+}
+
+body.embed .app-bar { display: none; }
+
+/* ----------------------------------------------------------------- panels */
+
+.panel {
+  background: var(--paper);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow);
+  padding: 1.1rem;
+}
+
+h1, h2, h3 { line-height: 1.25; }
+h1 { font-size: 1.7rem; margin: 0 0 0.3rem; }
+h2 { font-size: 1.35rem; margin: 0 0 0.6rem; }
+h3 { font-size: 1.15rem; margin: 0 0 0.5rem; }
+
+/* ----------------------------------------------------------------- buttons */
+
+button, .button {
+  font-family: inherit;
+  font-size: 1rem;
+  min-height: 3rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: var(--radius);
+  border: 2px solid var(--brand);
+  background: var(--brand);
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.12s ease, transform 0.06s ease;
+}
+
+button:hover { background: #0167ad; border-color: #0167ad; }
+button:active { transform: translateY(1px); }
+
+button.secondary {
+  background: var(--paper);
+  color: var(--brand-text);
+  border-color: var(--line-strong);
+}
+
+button.secondary:hover { background: var(--brand-tint); border-color: var(--brand); }
+
+button.plain {
+  background: transparent;
+  border-color: transparent;
+  color: var(--brand-text);
+  text-decoration: underline;
+}
+
+/* Every interactive element shows the same obvious focus ring. */
+:where(button, input, a, [tabindex]):focus-visible {
+  outline: 3px solid var(--brand);
+  outline-offset: 2px;
+}
+
+body.dark :where(button, input, a, [tabindex]):focus-visible {
+  outline-color: #8fd0ff;
+}
+
+/* ---------------------------------------------------------------- helpers */
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.note {
+  background: var(--brand-tint);
+  border-left: 6px solid var(--brand);
+  border-radius: var(--radius);
+  padding: 0.8rem 1rem;
+  font-size: 1rem;
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}

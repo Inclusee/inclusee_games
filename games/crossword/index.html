@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Daily Crossword — Inclusee Games</title>
+<meta name="description" content="A friendly daily crossword from Inclusee. Large print, no timer, no pressure.">
+<meta name="theme-color" content="#0b4f7a">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../../assets/inclusee-logo.png">
+<link rel="stylesheet" href="../shared/inclusee-theme.css">
+<link rel="stylesheet" href="css/crossword.css">
+</head>
+<body>
+
+<header class="app-bar">
+  <img class="logo" src="../../assets/inclusee-logo.png" alt="Inclusee — Connecting Community">
+  <span class="app-name">Games</span>
+  <span class="spacer"></span>
+  <a href="../index.html">All games</a>
+  <a href="https://app.inclusee.org">Back to Inclusee</a>
+</header>
+
+<div class="page">
+
+  <div class="game-head">
+    <h1 id="puzzle-title">Daily Crossword</h1>
+    <p class="date-line" id="puzzle-date"></p>
+  </div>
+
+  <p id="loading" class="panel">Fetching today&rsquo;s crossword&hellip;</p>
+
+  <div id="error" class="panel" role="alert" hidden></div>
+
+  <p class="visually-hidden" id="live" role="status" aria-live="polite"></p>
+
+  <div class="layout" id="game" hidden>
+
+    <!-- ------------------------------------------------------- the grid -->
+    <section class="panel grid-panel" aria-labelledby="grid-heading">
+      <h2 id="grid-heading" class="visually-hidden">Crossword grid</h2>
+
+      <p class="current-clue empty" id="current-clue">Tap a square to start.</p>
+
+      <div id="grid"></div>
+
+      <p class="progress-line" id="progress"></p>
+
+      <div id="keyboard" role="group" aria-label="Letter buttons"></div>
+
+      <div class="controls">
+        <button type="button" id="check">Check answers</button>
+        <button type="button" id="reveal-letter" class="secondary">Show a letter</button>
+        <button type="button" id="reveal-word" class="secondary">Show an answer</button>
+        <button type="button" id="clear" class="secondary">Start again</button>
+        <button type="button" id="print" class="plain">Print</button>
+      </div>
+
+      <div class="display-options">
+        <button type="button" id="bigger" class="secondary" aria-pressed="false">Bigger text</button>
+        <button type="button" id="dark" class="secondary" aria-pressed="false">Dark screen</button>
+        <button type="button" id="keys" class="secondary" aria-pressed="false">Letter buttons</button>
+      </div>
+
+      <p id="status" role="status"></p>
+
+      <div id="end-panel" hidden>
+        <h2>All done!</h2>
+        <p id="end-message"></p>
+      </div>
+    </section>
+
+    <!-- -------------------------------------------------------- the clues -->
+    <section class="panel clues-panel" aria-labelledby="clues-heading">
+      <h2 id="clues-heading">Clues</h2>
+
+      <details open>
+        <summary>How to play</summary>
+        <p>
+          Tap a square, then type a letter. The clue for the answer you are in
+          shows above the grid.
+        </p>
+        <p>
+          Tap the same square twice to switch between the across and down answer.
+          There is no timer and nothing to lose &mdash; take as long as you like.
+          Your letters are saved, so you can close the page and come back later.
+        </p>
+      </details>
+
+      <div class="clue-columns">
+        <div id="across"></div>
+        <div id="down"></div>
+      </div>
+    </section>
+
+  </div>
+
+  <div id="staff-notes" hidden></div>
+
+</div>
+
+<script src="../shared/save-state.js"></script>
+<script src="js/puzzle-text.js"></script>
+<script src="js/grid-generator.js"></script>
+<script src="js/content-loader.js"></script>
+<script src="js/crossword.js"></script>
+<script>
+  // The game container stays hidden until a puzzle is in place, so nobody sees
+  // a half-built grid or an empty clue list during loading.
+  document.addEventListener('DOMContentLoaded', function () {
+    var check = setInterval(function () {
+      if (window.IncluseeCrossword && window.IncluseeCrossword.state &&
+          window.IncluseeCrossword.state.puzzle) {
+        document.getElementById('game').hidden = false;
+        clearInterval(check);
+      }
+    }, 50);
+    setTimeout(function () {
+      clearInterval(check);
+      document.getElementById('game').hidden = false;
+    }, 4000);
+  });
+</script>
+</body>
+</html>

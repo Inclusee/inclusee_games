@@ -1,0 +1,35 @@
+#Title: Around the House
+#Date: 2026-09-25
+#
+# ---------------------------------------------------------------------------
+#  INCLUSEE DAILY CROSSWORD — clue file
+#  To change today's puzzle, edit the lines below the dotted line.
+#
+#  HOW IT WORKS (no coding needed):
+#    - One clue per line, like this:      Clue text = ANSWER
+#    - The "=" separates the clue from the answer. That's it.
+#    - Answers are letters only. Spaces, hyphens and punctuation are ignored,
+#      so "tea pot" and "TEA-POT" both become TEAPOT.
+#    - Answers must be 3 to 15 letters long.
+#    - 8 to 14 clues gives the nicest looking grid.
+#    - Lines starting with # are notes for us and are never shown to players.
+#    - The grid, the numbering and the arrow keys are all worked out
+#      automatically from the words you write. You never draw a grid.
+#
+#  If a line has a mistake, the game skips that one clue and shows you a note
+#  in the corner saying what to fix. Nothing breaks.
+# ---------------------------------------------------------------------------
+#----- EDIT FROM HERE ------------------------------------------------------
+
+The room where you cook the meals = KITCHEN
+A hot drink made from dried leaves = TEA
+The comfy chair you watch television from = ARMCHAIR
+Where you grow flowers and vegetables = GARDEN
+You use this to slice bread = KNIFE
+Frozen water, handy in a cold drink = ICE
+A pet that purrs = CAT
+It hangs on the wall and tells you the time = CLOCK
+The piece of furniture you sleep on = BED
+A machine for cutting the grass = MOWER
+The basin in the kitchen where plates are washed = SINK
+The day after today = TOMORROW

@@ -1,0 +1,279 @@
+/* ============================================================================
+   Inclusee Games — crossword screen
+   ----------------------------------------------------------------------------
+   Big squares, big type, one clear action at a time. Everything here is sized
+   from the --scale variable in the shared theme, so "Bigger text" enlarges the
+   whole game.
+   ========================================================================== */
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1rem 1rem 2.5rem;
+}
+
+.game-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin: 0.4rem 0 1rem;
+}
+
+.game-head h1 { margin: 0; }
+
+.date-line {
+  color: var(--ink-soft);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.05fr) minmax(300px, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* ------------------------------------------------------------- the grid */
+
+.grid-panel { padding: 1rem; }
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 12), 1fr);
+  gap: 3px;
+  background: var(--paper);
+  border: 3px solid var(--ink);
+  border-radius: 6px;
+  padding: 3px;
+  max-width: min(100%, 640px);
+  margin: 0 auto;
+}
+
+.cell {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  background: var(--paper-soft);
+  border-radius: 3px;
+}
+
+.cell.in-entry { background: var(--brand-tint); }
+.cell.is-selected { outline: 3px solid var(--brand); outline-offset: -3px; z-index: 2; }
+
+.cell-number {
+  position: absolute;
+  top: 0;
+  left: 2px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--ink-soft);
+  pointer-events: none;
+  z-index: 3;
+}
+
+input.letter {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  text-align: center;
+  font-family: inherit;
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding: 0;
+  caret-color: var(--brand);
+}
+
+input.letter:focus { outline: none; }
+
+/* Both a class on the square (set directly by the game) and :has() are used,
+   so an older in-app browser without :has() support still shows the circle. */
+.cell.wrong, .cell:has(input.wrong) { background: var(--bad-tint); }
+input.letter.wrong { color: var(--bad); }
+.cell.wrong::after, .cell:has(input.wrong)::after {
+  content: "";
+  position: absolute;
+  inset: 8%;
+  border: 2px solid var(--bad);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* --------------------------------------------------------- current clue */
+
+.current-clue {
+  margin: 0.9rem 0 0;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius);
+  background: var(--brand-tint-strong);
+  color: var(--ink);
+  font-size: 1.15rem;
+  line-height: 1.4;
+  min-height: 3.6rem;
+}
+
+.current-clue.empty { color: var(--ink-soft); font-style: italic; }
+
+/* -------------------------------------------------------------- controls */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.9rem 0 0;
+}
+
+.controls button { flex: 0 1 auto; }
+
+.display-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.9rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 2px solid var(--line);
+}
+
+.progress-line {
+  margin: 0.9rem 0 0;
+  font-size: 1.05rem;
+  color: var(--ink-soft);
+}
+
+/* --------------------------------------------------------------- clues */
+
+.clues-panel { padding: 1rem; }
+
+.clue-columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 620px) and (max-width: 900px) {
+  .clue-columns { grid-template-columns: 1fr 1fr; }
+}
+
+.clue-list { list-style: none; margin: 0; padding: 0; }
+
+.clue-list li { margin: 0 0 0.3rem; }
+
+.clue {
+  display: flex;
+  gap: 0.7rem;
+  width: 100%;
+  text-align: left;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  padding: 0.6rem 0.75rem;
+  font-size: 1.05rem;
+  line-height: 1.35;
+  min-height: 0;
+}
+
+.clue:hover { background: var(--brand-tint); border-color: var(--line-strong); }
+
+.clue.is-active {
+  background: var(--brand-tint-strong);
+  border-color: var(--brand);
+}
+
+.clue-number {
+  font-weight: 700;
+  color: var(--brand-text);
+  min-width: 1.6em;
+  text-align: right;
+  flex: 0 0 auto;
+}
+
+.clue.done .clue-text { color: var(--ink-soft); }
+.clue.solved .clue-text { color: var(--good); }
+.clue.solved::after { content: " \2713"; color: var(--good); font-weight: 700; }
+
+/* ------------------------------------------------- letter buttons (touch) */
+
+#keyboard {
+  display: none;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0.9rem 0 0;
+}
+
+body.show-keyboard #keyboard { display: flex; }
+
+#keyboard .key {
+  flex: 1 1 8%;
+  min-width: calc(2.4rem * var(--scale));
+  min-height: calc(2.6rem * var(--scale));
+  padding: 0.2rem;
+  background: var(--paper);
+  color: var(--ink);
+  border-color: var(--line-strong);
+  font-weight: 700;
+}
+
+#keyboard .key:hover { background: var(--brand-tint); border-color: var(--brand); }
+#keyboard .key.wide { flex-basis: 22%; }
+
+/* ------------------------------------------------------------------ states */
+
+#loading, #error {
+  text-align: center;
+  padding: 2rem 1rem;
+  font-size: 1.15rem;
+}
+
+#status {
+  margin: 0.9rem 0 0;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius);
+  background: var(--warn-tint);
+  color: var(--ink);
+  border-left: 6px solid var(--warn);
+  display: none;
+}
+
+#status.show { display: block; }
+
+#end-panel {
+  margin: 1rem 0 0;
+  padding: 1.2rem;
+  border-radius: var(--radius-lg);
+  background: var(--good-tint);
+  border: 3px solid var(--good);
+  text-align: center;
+}
+
+#end-panel h2 { color: var(--good); }
+#end-panel p { font-size: 1.15rem; margin: 0.4rem 0 0; }
+
+#staff-notes {
+  margin: 1rem 0 0;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius);
+  background: var(--paper-soft);
+  border: 2px dashed var(--line-strong);
+  font-size: 0.95rem;
+}
+
+#staff-notes code { background: var(--brand-tint); padding: 0.1rem 0.3rem; border-radius: 4px; }
+
+/* ------------------------------------------------------------------ print */
+
+@media print {
+  .app-bar, .controls, .display-options, #keyboard, #status, .game-head .date-line { display: none !important; }
+  body { background: #fff; }
+  #grid { border-color: #000; }
+  .cell.in-entry, .cell.is-selected, #current-clue { background: #fff !important; outline: none !important; }
+  .clue { border: 0; padding: 0.2rem 0; }
+  input.letter { color: #000; }
+}

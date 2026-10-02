@@ -1,0 +1,22 @@
+#Title: Weather and Seasons
+#Date: 2026-01-01
+#
+# ---------------------------------------------------------------------------
+#  SAMPLE PUZZLE (sample.txt)
+#  The game only uses this file if it cannot find a dated puzzle, so a missing
+#  week never leaves residents staring at an empty page. Feel free to update it
+#  with anything seasonally appropriate.
+# ---------------------------------------------------------------------------
+
+Rain falling lightly and steadily = DRIZZLE
+A very hot day is often called this = SCORCHER
+The season after winter = SPRING
+You hold this up in the rain = UMBRELLA
+Small balls of ice falling from the sky = HAIL
+A warm drink for a cold morning = COCOA
+The season of falling leaves = AUTUMN
+A gentle wind, pleasant on a summer day = BREEZE
+These are grey and full of rain = CLOUDS
+The bright thing we see in the sky on a clear day = SUN
+The coldest season of the year = WINTER
+Snow white flakes falling are called = SNOWFLAKES
