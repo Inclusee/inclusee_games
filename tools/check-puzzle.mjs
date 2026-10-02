@@ -87,7 +87,11 @@ function checkFile(file) {
   const name = basename(file);
   const raw = readFileSync(file, 'utf8');
   const parsed = puzzleText.parse(raw);
-  const seed = parsed.meta.date || name.replace(/\.txt$/i, '');
+  // Same rule the game uses: the FILE NAME decides the puzzle, and the seed
+  // follows it. Using the #Date line here instead made the preview show a
+  // different grid from the one residents would actually get.
+  const nameDate = (name.match(/\d{4}-\d{2}-\d{2}/) || [])[0];
+  const seed = nameDate || parsed.meta.date || name.replace(/\.txt$/i, '');
 
   console.log(`\n${BOLD}${name}${OFF} ${DIM}(seed: ${seed})${OFF}`);
 
@@ -118,6 +122,10 @@ function checkFile(file) {
   if (clueCount > 16) warnings.push(`${clueCount} clues is a lot for one sitting`);
   for (const e of puzzle.entries) {
     if (e.clue.length > 110) warnings.push(`the clue for ${e.number} ${e.direction} is very long (${e.clue.length} characters)`);
+  }
+  if (nameDate && parsed.meta.date && nameDate !== parsed.meta.date) {
+    warnings.push('the file is named ' + nameDate + ' but its #Date line says ' + parsed.meta.date +
+      ' - the file name wins, so change the #Date line or the file name');
   }
   const across = puzzle.entries.filter(e => e.direction === 'across').length;
   const down = puzzle.entries.filter(e => e.direction === 'down').length;

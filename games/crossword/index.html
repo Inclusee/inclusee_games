@@ -28,6 +28,20 @@
     <p class="date-line" id="puzzle-date"></p>
   </div>
 
+  <!-- Who is playing. Optional: the game works perfectly without a name, and
+       nothing typed here ever leaves this device. -->
+  <section class="panel profile-panel" aria-labelledby="profile-heading">
+    <h2 id="profile-heading" class="profile-heading">Your name</h2>
+    <div class="profile-row">
+      <input type="text" id="who" name="who" maxlength="24" autocomplete="name"
+             spellcheck="false" placeholder="Type your name, then press Save"
+             aria-describedby="streak">
+      <button type="button" id="who-save">Save</button>
+    </div>
+    <p id="streak" class="streak-line" role="status" aria-live="polite"></p>
+    <div id="streak-days" class="streak-days" aria-hidden="true"></div>
+  </section>
+
   <p id="loading" class="panel">Fetching today&rsquo;s crossword&hellip;</p>
 
   <div id="error" class="panel" role="alert" hidden></div>
@@ -99,7 +113,9 @@
 
 </div>
 
+<script src="../config.js"></script>
 <script src="../shared/save-state.js"></script>
+<script src="../shared/profile.js"></script>
 <script src="js/puzzle-text.js"></script>
 <script src="js/grid-generator.js"></script>
 <script src="js/content-loader.js"></script>

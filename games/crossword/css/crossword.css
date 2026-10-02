@@ -43,35 +43,41 @@
 
 .grid-panel { padding: 1rem; }
 
+/* Every square is outlined in the strongest contrast colour available - black on
+   the light screen, white on the dark screen. Thin pale lines between squares
+   are the single biggest problem for residents with poor vision: they cannot
+   tell where one answer ends and the next begins. */
 #grid {
   display: grid;
   grid-template-columns: repeat(var(--cols, 12), 1fr);
-  gap: 3px;
+  gap: 0;
   background: var(--paper);
-  border: 3px solid var(--ink);
-  border-radius: 6px;
-  padding: 3px;
-  max-width: min(100%, 640px);
+  border: 4px solid var(--grid-line);
+  border-radius: 4px;
+  padding: 0;
+  max-width: min(100%, 660px);
   margin: 0 auto;
 }
 
 .cell {
   position: relative;
   aspect-ratio: 1 / 1;
-  background: var(--paper-soft);
-  border-radius: 3px;
+  background: var(--paper);
+  border: 2px solid var(--grid-line);
+  border-radius: 0;
 }
 
 .cell.in-entry { background: var(--brand-tint); }
-.cell.is-selected { outline: 3px solid var(--brand); outline-offset: -3px; z-index: 2; }
+.cell.is-selected { outline: 4px solid var(--brand); outline-offset: -4px; z-index: 2; }
 
 .cell-number {
   position: absolute;
   top: 0;
   left: 2px;
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 700;
   color: var(--ink-soft);
+  line-height: 1;
   pointer-events: none;
   z-index: 3;
 }
@@ -277,3 +283,52 @@ body.show-keyboard #keyboard { display: flex; }
   .clue { border: 0; padding: 0.2rem 0; }
   input.letter { color: #000; }
 }
+
+/* ------------------------------------------------- who is playing + streak */
+
+.profile-panel { padding: 0.9rem 1rem; margin: 0 0 1rem; }
+
+.profile-heading { font-size: 1.05rem; margin: 0 0 0.5rem; }
+
+.profile-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: stretch;
+}
+
+.profile-row input {
+  flex: 1 1 16rem;
+  min-height: 3rem;
+  font-family: inherit;
+  font-size: 1.1rem;
+  color: var(--ink);
+  background: var(--paper);
+  border: 2px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 0.5rem 0.8rem;
+}
+
+.profile-row input::placeholder { color: var(--ink-soft); opacity: 1; }
+
+.streak-line {
+  margin: 0.7rem 0 0;
+  font-size: 1.05rem;
+  color: var(--ink);
+  min-height: 1.5em;
+}
+
+/* Seven dots, one per day, newest on the right. Decorative - the sentence above
+   carries the same information for anyone using a screen reader. */
+.streak-days { display: flex; gap: 0.4rem; margin: 0.5rem 0 0; }
+
+.streak-days .day {
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 2px solid var(--grid-line);
+  background: var(--paper);
+}
+
+.streak-days .day.done { background: var(--good); border-color: var(--good); }
+.streak-days .day.today { outline: 3px solid var(--brand); outline-offset: 2px; }

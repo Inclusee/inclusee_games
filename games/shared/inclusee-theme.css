@@ -22,6 +22,9 @@
   --paper-soft: #f5f8fb;
   --line: #b9c6d3;
   --line-strong: #7d8d9c;
+  /* Outlines for puzzle squares and other "you must see where this ends" edges.
+     Always the strongest contrast available against the paper colour. */
+  --grid-line: #000000;
 
   /* Feedback — gentle, never alarming. */
   --good: #1b6b4a;
@@ -53,6 +56,7 @@ body.dark {
   --brand-text: #7cc0f0;          /* 7.4:1 on the panel */
   --line: #4a5a69;
   --line-strong: #8a9aa8;
+  --grid-line: #ffffff;
   --good: #7fd3a4;
   --good-tint: #14301f;
   --bad: #ff9d95;

@@ -119,10 +119,16 @@ You can set the heading residents see. Put these at the very top of the file:
 
 ```
 #Title: Around the House
-#Date: 2026-09-25
+#Date: 2026-10-03
 ```
 
 If you leave the `#Title` line out, the heading is simply "Daily Crossword".
+
+**Careful with `#Date` when copying an old puzzle.** The file *name* decides which day
+the puzzle appears, and it always wins. The `#Date` line is only for the heading. If
+you copy last week's file and forget to change it, the puzzle still appears on the
+right day, but the heading says the old date. The checker warns you about this, and so
+does the game's `?staff=1` view.
 
 ---
 
@@ -138,12 +144,9 @@ on.
 
 ---
 
-## Publishing to the website
+## Where the puzzle files are kept
 
-*(This section gets filled in once hosting is confirmed — the files go up in the same
-folder structure you see here.)*
-
-The folder that needs to end up on the web server is:
+The folder that needs to be on the web server:
 
 ```
 games/crossword/
@@ -157,6 +160,79 @@ games/crossword/
 
 Once a puzzle file is on the server, that is it — no publishing step, no rebuild,
 nothing to restart.
+
+### Moving the puzzles somewhere else
+
+The puzzle location is one line in `games/config.js`. Nothing else changes:
+
+```
+window.INCLUSEE_CONFIG = {
+  puzzleSource: 'puzzles/',
+  puzzleSourceTemplate: null
+};
+```
+
+Set `puzzleSource` to a folder — either a folder on the same website, or a full web
+address ending in a slash:
+
+```
+puzzleSource: 'https://example.org/shared/puzzles/'
+```
+
+If the full address of each file is not simply the folder plus the date, use
+`puzzleSourceTemplate` instead and put `{date}` where the date belongs:
+
+```
+puzzleSourceTemplate: 'https://example.org/download.aspx?path={date}.txt'
+```
+
+`{name}` also works, meaning the whole file name including `.txt`.
+
+### The puzzles live in HubSpot (current arrangement)
+
+The puzzle files are kept in HubSpot, in this folder:
+
+```
+Inclusee Theme 2025 / Games / crossword / puzzles
+```
+
+Nothing else needs to move. The games themselves stay on the website; only the
+puzzles are read from HubSpot. Adding or changing a puzzle in HubSpot is all that is
+needed — there is no publishing step on the website side.
+
+**To add or change a puzzle:**
+
+1. In HubSpot, open the folder above and find (or upload) the file for that date.
+2. Edit it and publish the change in HubSpot.
+3. That is it. Residents see it on the right day.
+
+Two things to know about HubSpot:
+
+- HubSpot remembers a copy of each file for a while. If you fix a typo and residents
+  still see the old text, that is why — it clears on its own within a day.
+- Upload the file with the date as its name, for example `2026-10-03.txt`. The file
+  name is what decides which day the puzzle appears.
+
+### Why not SharePoint
+
+SharePoint cannot be used, and this is not something we can fix in the game. Asking
+SharePoint for a file returns "not allowed" (error 403), because files there need a
+sign-in, and a web page cannot sign in on a resident's behalf. Opening the folder link
+in a browser shows a Microsoft sign-in screen for the same reason.
+
+If the team prefers to keep working in SharePoint, the workable arrangement is to keep
+the master copies there and copy the finished file into the HubSpot folder above.
+
+### If residents see "Today's crossword isn't available just yet"
+
+Add `?staff=1` to the crossword address. The box at the bottom lists every address the
+game tried and what happened:
+
+- **"could not be reached at all"** — the game could not talk to that server. Usually
+  an address is wrong, or the other server is refusing to share its files.
+- **"the server said not allowed"** — the file exists but is not shared publicly.
+- **nothing listed** — the game reached the folder but found no puzzle. Check the file
+  name is exactly `YYYY-MM-DD.txt`.
 
 ---
 
@@ -172,6 +248,9 @@ nothing to restart.
 | Check everything before publishing | Double-click `tools\check-puzzle.bat` |
 | See a puzzle in detail | Add `?staff=1` to the crossword's web address |
 | Remove a puzzle | Delete its file — the game falls back to the previous day's |
+| Move the puzzle files somewhere else | Change one line in `games/config.js` |
+| Add or edit a puzzle in HubSpot | Edit the file in the folder above and publish it there |
+| Find out why no puzzle loaded | Add `?staff=1` to the crossword address |
 
 ---
 
@@ -181,6 +260,9 @@ nothing to restart.
 |---|---|
 | "Today's crossword isn't available just yet" | No puzzle file was found at all. Check the file is in the `puzzles` folder and the name looks exactly like `2026-10-03.txt` |
 | Residents see yesterday's puzzle | Today's file is missing, or the name has a typo — the game is falling back |
+| "This page could not fetch a puzzle file" | The puzzle folder is somewhere the page is not allowed to read — check `?staff=1` |
+| A fixed typo will not go away | HubSpot is still serving its saved copy — it clears within a day |
+| The heading shows the wrong date | The `#Date` line was left over from a copied file. The file name is correct |
 | "(sample puzzle)" next to the heading | No dated puzzle could be read, so the bundled sample is showing |
 | One of your clues is missing from the puzzle | That line was skipped. Run the checker to see which line and why |
 | The grid looks long and thin | Add some shorter answers. A mix of 3–5 letter and 7–9 letter answers gives a tidier square |

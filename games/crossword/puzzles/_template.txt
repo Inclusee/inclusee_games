@@ -6,7 +6,7 @@
 #   1. Copy this file into the puzzles folder.
 #   2. Rename it with the date you want it to appear, e.g. 2026-10-01.txt
 #      (the game picks the file that matches today's date, and keeps using the
-#       most recent one if today's is missing — so it never shows a blank page)
+#       most recent one if today's is missing - so it never shows a blank page)
 #   3. Replace the clues below. Keep the "=" between clue and answer.
 #   4. Save the file. That's the whole process.
 #

@@ -445,7 +445,9 @@
     if (solved === total && !state.finished) {
       state.finished = true;
       save();
-      showEndPanel();
+      IncluseeProfile.recordCompletion(state.playerName, state.loaded.date);
+      var summary = refreshStreak();
+      showEndPanel(summary);
       return;
     }
     if (solved === total) return;
@@ -459,12 +461,15 @@
     if (filledEverything) announce('All the squares are filled, but not every answer is right yet. Use Check answers when you are ready.');
   }
 
-  function showEndPanel() {
+  function showEndPanel(summary) {
     el.endPanel.hidden = false;
-    var message = 'You finished the crossword. Well done.';
+    var who = (summary && summary.displayName) ? summary.displayName + ', you' : 'You';
+    var message = who + ' finished the crossword. Well done.';
     if (state.revealed > 0) {
-      message = 'Crossword finished — you used ' + state.revealed + ' hint' + (state.revealed === 1 ? '' : 's') + ' to get there. Well done.';
+      message = who + ' finished the crossword, using ' + state.revealed + ' hint' +
+        (state.revealed === 1 ? '' : 's') + '. Well done.';
     }
+    if (summary && summary.finishedToday) message += ' ' + summary.text;
     el.endMessage.textContent = message;
     announce('Crossword complete. ' + message);
     el.endPanel.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
@@ -476,10 +481,17 @@
 
   /* ------------------------------------------------------------ saving work */
 
+  /** Letters and streaks are kept per name, so a shared tablet does not mix two
+   *  residents' work together. With no name, the old shared key is used. */
+  function saveKey() {
+    var id = IncluseeProfile.slug(state.playerName || '');
+    return SAVE_KEY + (id ? '.' + id : '');
+  }
+
   function save() {
     if (!state.puzzle) return;
     try {
-      localStorage.setItem(SAVE_KEY, JSON.stringify(IncluseeSaveState.createSave(state.loaded.date, state.letters, {
+      localStorage.setItem(saveKey(), JSON.stringify(IncluseeSaveState.createSave(state.loaded.date, state.letters, {
         source: state.loaded.source,
         revealed: state.revealed,
         finished: state.finished
@@ -489,7 +501,7 @@
 
   function restore() {
     var raw = null;
-    try { raw = JSON.parse(localStorage.getItem(SAVE_KEY) || 'null'); } catch (err) { raw = null; }
+    try { raw = JSON.parse(localStorage.getItem(saveKey()) || 'null'); } catch (err) { raw = null; }
 
     var saved = IncluseeSaveState.readSave(raw, state.loaded.date, state.puzzle.rows, state.puzzle.cols);
     if (!saved.accepted) return false;
@@ -724,12 +736,102 @@
     el.clear.addEventListener('click', clearAll);
     el.print.addEventListener('click', function () { window.print(); });
 
+    el.whoSave.addEventListener('click', saveName);
+    el.who.addEventListener('keydown', function (ev) {
+      if (ev.key === 'Enter') { ev.preventDefault(); saveName(); }
+    });
+    el.who.addEventListener('blur', function () {
+      // Saving on the way out means nobody loses a name they typed and forgot to
+      // save, which a first-time user is very likely to do.
+      if (IncluseeProfile.cleanName(el.who.value) !== IncluseeProfile.getUser()) saveName();
+    });
+
     document.addEventListener('keydown', function (ev) {
       if (ev.key === 'Escape' && state.selected) {
         var input = inputAt(state.selected.r, state.selected.c);
         if (input) input.blur();
       }
     });
+  }
+
+  /* ------------------------------------------------------- name and streak */
+
+  function saveName() {
+    var typed = IncluseeProfile.cleanName(el.who.value);
+    var previous = IncluseeProfile.getUser();
+
+    IncluseeProfile.setUser(typed);
+    el.who.value = typed;
+    state.playerName = typed;
+
+    // Each name keeps its own letters, so switching names loads that person's
+    // own puzzle instead of a half-and-half mixture of two people's work.
+    // Nothing is lost: the other person's letters stay saved under their name.
+    clearGridWithoutSaving();
+    restore();
+    refreshEntryStates();
+    paintSelection();
+
+    // Finished before typing a name? Credit them for it now.
+    if (allEntriesCorrect()) {
+      IncluseeProfile.recordCompletion(typed, state.loaded.date);
+      showEndPanel(refreshStreak());
+      return;
+    }
+
+    refreshStreak(typed
+      ? 'Playing as ' + (IncluseeProfile.displayName(typed) || 'this player') + '.'
+      : 'Name cleared. The crossword still works without one.');
+  }
+
+  function allEntriesCorrect() {
+    if (!state.puzzle) return false;
+    for (var i = 0; i < state.puzzle.entries.length; i++) {
+      if (!entryIsCorrect(state.puzzle.entries[i])) return false;
+    }
+    return true;
+  }
+
+  /** Empties the grid WITHOUT writing to storage. Used when switching names,
+   *  where that name's own saved letters are about to be loaded instead - saving
+   *  an empty grid first would wipe the very progress we are about to restore. */
+  function clearGridWithoutSaving() {
+    for (var r = 0; r < state.puzzle.rows; r++) {
+      for (var c = 0; c < state.puzzle.cols; c++) clearCell(r, c);
+    }
+    state.revealed = 0;
+    state.finished = false;
+    el.endPanel.hidden = true;
+    refreshEntryStates();
+  }
+
+  function refreshStreak(spoken) {
+    var name = state.playerName || '';
+    var summary = IncluseeProfile.summary(name, state.loaded.date);
+    state.streak = summary;
+
+    if (!name) {
+      el.streak.textContent = summary.finished
+        ? 'Playing without a name. ' + summary.finished + ' crossword' + (summary.finished === 1 ? '' : 's') + ' finished on this device.'
+        : 'Add your name to keep a run of days going.';
+    } else {
+      el.streak.textContent = summary.text;
+    }
+
+    // Seven dots for the last seven days, today on the right.
+    el.streakDays.innerHTML = '';
+    var has = {};
+    for (var i = 0; i < summary.dates.length; i++) has[summary.dates[i]] = true;
+    for (var back = 6; back >= 0; back--) {
+      var date = IncluseePuzzleText.shiftISO(state.loaded.date, -back);
+      var dot = document.createElement('span');
+      dot.className = 'day' + (has[date] ? ' done' : '') + (back === 0 ? ' today' : '');
+      dot.title = IncluseePuzzleText.prettyDate(date) + (has[date] ? ' - finished' : '');
+      el.streakDays.appendChild(dot);
+    }
+
+    if (spoken) announce(spoken + ' ' + el.streak.textContent);
+    return summary;
   }
 
   /* ------------------------------------------------------------------- boot */
@@ -754,6 +856,10 @@
     el.clear = $('#clear');
     el.print = $('#print');
     el.staffNotes = $('#staff-notes');
+    el.who = $('#who');
+    el.whoSave = $('#who-save');
+    el.streak = $('#streak');
+    el.streakDays = $('#streak-days');
     el.title = $('#puzzle-title');
     el.dateLine = $('#puzzle-date');
     el.loading = $('#loading');
@@ -771,10 +877,19 @@
     var loaded = await IncluseePuzzleLoader.loadPuzzle();
     el.loading.hidden = true;
 
-    if (!loaded) {
+    if (!loaded || loaded.failed) {
       el.error.hidden = false;
       el.error.innerHTML = '<h2>Today\u2019s crossword isn\u2019t available just yet</h2>' +
-        '<p>We could not find a puzzle file on the server. Please try again later, or ask a staff member to check the <code>puzzles</code> folder.</p>';
+        '<p>We could not fetch a puzzle file. Please try again later, or ask a staff member to check where the puzzle files are kept.</p>' +
+        (staff ? '<div id="fetch-notes"></div>' : '');
+      if (staff && loaded && loaded.problems) {
+        var box = document.getElementById('fetch-notes');
+        if (box) {
+          box.innerHTML = '<p>Addresses tried:</p><ul>' + loaded.problems.map(function (p) {
+            return '<li><code>' + p.path + '</code> \u2014 ' + p.why + '</li>';
+          }).join('') + '</ul><p>A message mentioning CORS means the other server is refusing to hand files to this page. See the staff notes on hosting.</p>';
+        }
+      }
       return;
     }
 
@@ -790,9 +905,17 @@
     el.dateLine.textContent = IncluseePuzzleText.prettyDate(loaded.date) +
       (loaded.isSample ? ' (sample puzzle)' : (loaded.daysOld ? ' (most recent puzzle)' : ''));
 
+    state.playerName = IncluseeProfile.getUser();
+    if (state.playerName) el.who.value = state.playerName;
+
     var restored = restore();
     refreshEntryStates();
     paintSelection();
+    refreshStreak();
+    if (state.playerName) {
+      var hello = IncluseeProfile.displayName(state.playerName);
+      if (loaded.meta && loaded.meta.title) document.title = hello + ' - ' + loaded.meta.title;
+    }
     if (restored) checkCompletion();
 
     // Anything staff should know about the clue file: only visible with
@@ -804,6 +927,13 @@
     }
     for (var j = 0; j < loaded.puzzle.unplaced.length; j++) {
       notes.push('Could not fit the answer "' + loaded.puzzle.unplaced[j].answer + '" into the grid');
+    }
+    if (loaded.dateMismatch) {
+      notes.push('This file is named ' + loaded.dateMismatch.file + ' but its #Date line says ' +
+        loaded.dateMismatch.header + '. The file name is being used. Check the #Date line.');
+    }
+    for (var f = 0; f < (loaded.fetchProblems || []).length; f++) {
+      notes.push('Could not fetch ' + loaded.fetchProblems[f].path + ' \u2014 ' + loaded.fetchProblems[f].why);
     }
     if (staff) {
       el.staffNotes.hidden = false;
@@ -833,7 +963,9 @@
     fillEverything: fillEverything,
     selectEntry: selectEntry,
     selectCell: selectCell,
-    typeLetter: typeLetter
+    typeLetter: typeLetter,
+    saveName: saveName,
+    refreshStreak: refreshStreak
   };
 
   if (document.readyState === 'loading') {

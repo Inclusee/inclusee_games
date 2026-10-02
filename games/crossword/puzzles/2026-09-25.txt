@@ -2,7 +2,7 @@
 #Date: 2026-09-25
 #
 # ---------------------------------------------------------------------------
-#  INCLUSEE DAILY CROSSWORD — clue file
+#  INCLUSEE DAILY CROSSWORD - clue file
 #  To change today's puzzle, edit the lines below the dotted line.
 #
 #  HOW IT WORKS (no coding needed):
