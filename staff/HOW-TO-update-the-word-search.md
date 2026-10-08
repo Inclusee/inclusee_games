@@ -137,6 +137,29 @@ will appear on the right days. There is no schedule to maintain.
 
 ---
 
+## One important thing about folder names
+
+**HubSpot file paths are case-sensitive.** `Wordsearch/Words` and `wordsearch/words`
+are different folders to HubSpot, and only one of them is the right one.
+
+This matters because nothing visibly breaks if the name is wrong: the game quietly
+falls back to the copy that ships with it, so residents still get a puzzle — it is
+just not the one you wrote. If your edits are not appearing, this is the first thing
+to check.
+
+The correct folders are:
+
+| Game | Folder |
+|---|---|
+| Crossword | `Games/crossword/puzzles` |
+| Word search | `Games/Wordsearch/Words` |
+
+Note they really are different: the crossword folder is lower case, the word search
+one is not. Do not rename either folder — the game looks for these exact names.
+
+To check which folder was actually used, add `?staff=1` to the game's web address. If
+it says the copy that ships with the game is being shown, the folder name is wrong.
+
 ## Common problems
 
 | What you see | What it usually means |

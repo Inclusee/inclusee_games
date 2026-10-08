@@ -584,6 +584,11 @@
     for (var f = 0; f < (loaded.fetchProblems || []).length; f++) {
       notes.push('Could not fetch ' + loaded.fetchProblems[f].path + ' \u2014 ' + loaded.fetchProblems[f].why);
     }
+    if (loaded.usedShippedCopy) {
+      notes.push('The staff word list folder could not be read, so the copy that ships with ' +
+        'the game is being shown instead. Check the folder name: HubSpot paths are ' +
+        'case-sensitive. Configured: ' + loaded.configuredSource);
+    }
 
     if (staff) {
       el.staffNotes.hidden = false;
@@ -602,27 +607,43 @@
     announce(el.title.textContent + ' loaded. ' + state.puzzle.placements.length + ' words to find.');
   }
 
+  /**
+   * sourceList(config, queryString, makeUrlFor) -> [{ kind, urlFor }]
+   *
+   * Which folders to try, in order:
+   *   'query'      a folder given in the address - for demos and testing
+   *   'configured' the staff folder on HubSpot (config.wordSearchSource)
+   *   'shipped'    the copy that travels with the game
+   *
+   * Knowing WHICH one won is what lets the staff view say "the staff folder could
+   * not be read, this is the shipped copy" instead of leaving a wrong folder name
+   * looking like "my edits are not appearing". Pure, so it can be tested without
+   * a browser.
+   */
+  function sourceList(config, queryString, makeUrlFor) {
+    var query = new URLSearchParams(queryString || '');
+    var sources = [];
+
+    if (query.get('source') || query.get('template')) {
+      sources.push({ kind: 'query', urlFor: makeUrlFor(query.get('source'), query.get('template')) });
+    }
+    if (config.wordSearchSource || config.wordSearchTemplate) {
+      sources.push({ kind: 'configured', urlFor: makeUrlFor(config.wordSearchSource, config.wordSearchTemplate) });
+    }
+    sources.push({ kind: 'shipped', urlFor: makeUrlFor('words/', null) });
+    return sources;
+  }
+
   /** Loads the word file: the staff folder first, then the copy that ships with the game. */
   var lastProblems = [];
   async function loadWords() {
     var config = root.INCLUSEE_CONFIG || {};
     var today = IncluseeDates.todayISO();
 
-    var query = new URLSearchParams(window.location.search);
-    var sources = [];
-
-    // A folder given in the address wins, for demos and testing.
-    if (query.get('source') || query.get('template')) {
-      sources.push(IncluseePuzzleLoader.makeUrlFor(query.get('source'), query.get('template')));
-    }
-    sources.push(IncluseePuzzleLoader.makeUrlFor(config.wordSearchSource, config.wordSearchTemplate));
-
-    // And if the staff folder cannot be reached at all, the copy that ships
-    // beside the game is used, so a missing folder never empties the page.
-    sources.push(IncluseePuzzleLoader.makeUrlFor('words/', null));
+    var sources = sourceList(config, window.location.search, IncluseePuzzleLoader.makeUrlFor);
 
     for (var i = 0; i < sources.length; i++) {
-      var found = await IncluseePuzzleLoader.loadPuzzleText({ urlFor: sources[i], today: today });
+      var found = await IncluseePuzzleLoader.loadPuzzleText({ urlFor: sources[i].urlFor, today: today });
       if (!found) continue;
 
       var parsed = IncluseeWordList.parse(found.text);
@@ -630,6 +651,10 @@
 
       var resolved = IncluseePuzzleLoader.resolveDate(found, parsed.meta, today);
       return {
+        // Only true when the copy shipped with the game is what is on screen,
+        // which means the staff folder could not be read at all.
+        usedShippedCopy: sources[i].kind === 'shipped',
+        configuredSource: config.wordSearchSource || null,
         puzzle: IncluseeWordSearch.build(parsed.words.map(function (w) { return w.word; }), {
           seed: resolved.date,
           directions: parsed.meta.directions
@@ -675,6 +700,7 @@
 
   root.IncluseeWordSearchGame = {
     state: function () { return state; },
+    sourceList: sourceList,
     pickCell: pickCell,
     showMe: showMe,
     startAgain: startAgain,

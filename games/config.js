@@ -32,6 +32,7 @@ window.INCLUSEE_CONFIG = {
   //
   // Staff: normal editing happens in HubSpot, not here. See the staff guide.
   // --------------------------------------------------------------------------
+  // Case-sensitive too: this folder really is lower case, unlike the word search.
   puzzleSource: 'https://6860964.fs1.hubspotusercontent-ap1.net/hubfs/6860964/Inclusee%20Theme%202025/Games/crossword/puzzles/',
 
   // Use this instead of puzzleSource when the full address of each file is not
@@ -46,7 +47,12 @@ window.INCLUSEE_CONFIG = {
   // games/wordsearch/words/. Until it exists, the game quietly uses the copies
   // that ship beside it, so the page is never empty.
   // --------------------------------------------------------------------------
-  wordSearchSource: 'https://6860964.fs1.hubspotusercontent-ap1.net/hubfs/6860964/Inclusee%20Theme%202025/Games/wordsearch/words/',
+  // NOTE: HubSpot file paths are case-sensitive. This is the exact spelling of
+  // the folder as it exists there ("Wordsearch/Words", not "wordsearch/words").
+  // A path in the wrong case does not error - it 404s, and the game quietly
+  // falls back to the copy that ships beside it, so a typo here looks like
+  // "staff edits are not appearing" rather than "the folder name is wrong".
+  wordSearchSource: 'https://6860964.fs1.hubspotusercontent-ap1.net/hubfs/6860964/Inclusee%20Theme%202025/Games/Wordsearch/Words/',
 
   // Optional, same idea as puzzleSourceTemplate above.
   wordSearchTemplate: null
