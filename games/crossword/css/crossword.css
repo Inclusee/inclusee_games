@@ -30,14 +30,20 @@
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(320px, 1.05fr) minmax(300px, 1fr);
+  /* The grid matters more than the clue list, so it takes the larger share. */
+  grid-template-columns: minmax(320px, 1.6fr) minmax(280px, 1fr);
   gap: 1rem;
   align-items: start;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1080px) {
   .layout { grid-template-columns: 1fr; }
 }
+
+/* See the word search stylesheet: without this the panels refuse to shrink below
+   their content, and a wide grid pushes the whole page sideways on a narrow
+   screen. */
+.layout > * { min-width: 0; }
 
 /* ------------------------------------------------------------- the grid */
 
@@ -47,15 +53,22 @@
    the light screen, white on the dark screen. Thin pale lines between squares
    are the single biggest problem for residents with poor vision: they cannot
    tell where one answer ends and the next begins. */
+.grid-scroll { overflow-x: auto; min-width: 0; }
+
 #grid {
   display: grid;
   grid-template-columns: repeat(var(--cols, 12), 1fr);
-  gap: 0;
+  gap: 3px;
   background: var(--paper);
   border: 4px solid var(--grid-line);
   border-radius: 4px;
   padding: 0;
-  max-width: min(100%, 660px);
+  /* Squares never shrink below a fingertip, and everything grows together when
+     someone asks for bigger text: 40px per square at normal size, more at larger
+     settings. If that no longer fits the panel, the panel scrolls sideways
+     rather than making the squares too small to tap. */
+  width: max(100%, calc(var(--cols, 12) * 40px * var(--scale)));
+  max-width: calc(660px * var(--scale));
   margin: 0 auto;
 }
 
@@ -65,6 +78,11 @@
   background: var(--paper);
   border: 2px solid var(--grid-line);
   border-radius: 0;
+  /* A grid column cannot shrink below the smallest its content could be, and a
+     text box's smallest is the width of its default 20 characters. Without this
+     every square stayed 34px wide however narrow the screen got, and the grid
+     pushed the whole page sideways. */
+  min-width: 0;
 }
 
 /* The answer being worked on is washed pale yellow; the one square being typed

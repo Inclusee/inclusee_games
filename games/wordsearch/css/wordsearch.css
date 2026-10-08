@@ -24,14 +24,27 @@
 
 .layout {
   display: grid;
-  grid-template-columns: minmax(320px, 1.05fr) minmax(280px, 1fr);
+  /* The letter grid matters more than the word list, so it takes the larger
+     share of the width when there is room for two columns. */
+  grid-template-columns: minmax(320px, 1.6fr) minmax(260px, 1fr);
   gap: 1rem;
   align-items: start;
 }
 
-@media (max-width: 900px) {
+/* Stack into one column well before the two would start squeezing the grid.
+   Side by side only when there is genuinely room for a big letter grid AND the
+   word list. */
+@media (max-width: 1080px) {
   .layout { grid-template-columns: 1fr; }
 }
+
+/* A grid item defaults to min-width: auto, which means "never shrink below the
+   smallest this content could possibly be". For a panel holding a letter grid
+   that made the whole page refuse to narrow: on a 390px screen the layout stayed
+   728px wide and the page scrolled sideways. min-width: 0 lets the panels take
+   the width they are given, so the grid sizes down instead of bursting out. */
+.layout > * { min-width: 0; }
+.grid-scroll { min-width: 0; }
 
 /* --------------------------------------------------------------- the grid */
 
@@ -49,33 +62,54 @@
   min-height: 3.6rem;
 }
 
+/* The grid is sized from the panel it sits in, never from the letters it holds.
+   The previous version gave every square a minimum width, so a wide grid could
+   grow past its column and slide under the word list next to it. One column per
+   letter, each taking an equal share of whatever room there is, means the grid
+   can never be wider than its own panel. */
+.grid-scroll { overflow-x: auto; }        /* belt and braces, now never needed */
+
 #ws-grid {
-  border-collapse: collapse;
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 10), minmax(0, 1fr));
+  /* --letter is set from the measured width of one square, so the letters are
+     always in proportion to the squares holding them. */
+  --letter: 1.05rem;
+  gap: 0;
+  /* Never smaller than a fingertip: an 11 by 11 grid on a phone cannot give
+     every square 40px within the screen width, so the grid is allowed to be
+     wider than the panel and the panel scrolls sideways instead of shrinking
+     the squares to a size nobody can tap. */
+  width: max(100%, calc(var(--cols, 10) * 40px * var(--scale)));
+  max-width: calc(660px * var(--scale));
   margin: 0 auto;
   background: var(--paper);
   border: 4px solid var(--grid-line);
-  /* Never wider than the column it sits in: the letters must stay big. */
-  max-width: 100%;
 }
-
-#ws-grid td { padding: 0; border: 2px solid var(--grid-line); }
 
 #ws-grid .cell {
   display: block;
   width: 100%;
-  min-width: 2.1rem;
   aspect-ratio: 1 / 1;
   border: 0;
+  border-right: 2px solid var(--grid-line);
+  border-bottom: 2px solid var(--grid-line);
   border-radius: 0;
   background: var(--paper);
   color: var(--ink);
   font-family: inherit;
-  font-size: 1.05rem;
+  font-size: var(--letter);
+  line-height: 1;
   font-weight: 700;
   text-transform: uppercase;
   padding: 0;
   cursor: pointer;
 }
+
+/* The outer edge is drawn by the grid border, so the last row and column do not
+   need their own line and would otherwise double up. */
+#ws-grid .cell.edge-right { border-right: 0; }
+#ws-grid .cell.edge-bottom { border-bottom: 0; }
 
 #ws-grid .cell:focus-visible { outline: 4px solid var(--yellow); outline-offset: -4px; }
 

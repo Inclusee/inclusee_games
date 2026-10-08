@@ -72,26 +72,59 @@
 
   function buildGrid() {
     var puzzle = state.puzzle;
-    var table = el.grid;
-    table.innerHTML = '';
+    var container = el.grid;
+    container.innerHTML = '';
+    container.style.setProperty('--cols', String(puzzle.cols));
+    container.setAttribute('aria-label', 'Letter grid, ' + puzzle.rows + ' rows by ' + puzzle.cols + ' columns');
 
     for (var r = 0; r < puzzle.rows; r++) {
-      var tr = document.createElement('tr');
       for (var c = 0; c < puzzle.cols; c++) {
-        var td = document.createElement('td');
         var button = document.createElement('button');
         button.type = 'button';
         button.className = 'cell';
+        if (c === puzzle.cols - 1) button.classList.add('edge-right');
+        if (r === puzzle.rows - 1) button.classList.add('edge-bottom');
         button.textContent = puzzle.grid[r][c];
         button.dataset.r = String(r);
         button.dataset.c = String(c);
         button.setAttribute('aria-label', 'Row ' + (r + 1) + ', column ' + (c + 1) + ', letter ' + puzzle.grid[r][c]);
         button.tabIndex = (r === 0 && c === 0) ? 0 : -1;
-        td.appendChild(button);
-        tr.appendChild(td);
+        container.appendChild(button);
       }
-      table.appendChild(tr);
     }
+    fitLetters();
+  }
+
+  /**
+   * Size the letters from the squares that hold them.
+   *
+   * The squares are sized by the panel, so the letters follow the panel too.
+   * That is what keeps a large grid readable without ever letting it grow wider
+   * than the space it has been given.
+   */
+  function fitLetters() {
+    var first = el.grid.querySelector('.cell');
+    if (!first) return;
+    var width = first.getBoundingClientRect().width;
+    if (!width) return;                       // not on screen yet
+
+    var size = Math.max(15, Math.min(width * 0.52, 32));
+    el.grid.style.setProperty('--letter', size.toFixed(1) + 'px');
+  }
+
+  /**
+   * Measure once the browser has actually laid the grid out.
+   *
+   * A hidden panel reports a width of zero, so measuring too early silently
+   * leaves the letters at whatever size they started at. Repeating the
+   * measurement across a few frames covers the panel being revealed, a font
+   * arriving, and the word list changing height.
+   */
+  function measureSoon() {
+    fitLetters();
+    if (typeof requestAnimationFrame === 'function') requestAnimationFrame(fitLetters);
+    setTimeout(fitLetters, 60);
+    setTimeout(fitLetters, 400);
   }
 
   function cellAt(r, c) {
@@ -475,6 +508,7 @@
       state.prefs.scale = (state.prefs.scale + 1) % SCALES.length;
       savePrefs();
       applyPrefs();
+      fitLetters();
     });
     el.darkToggle.addEventListener('click', function () {
       state.prefs.dark = !state.prefs.dark;
@@ -508,10 +542,25 @@
     el.dateLine = $('#puzzle-date');
     el.loading = $('#loading');
     el.error = $('#error');
+    el.game = $('#game');
 
     loadPrefs();
     applyPrefs();
     wireChrome();
+
+    // The grid is sized from its panel, so it has to be re-measured whenever the
+    // shape of the page changes.
+    var remeasure = function () { measureSoon(); };
+    window.addEventListener('resize', remeasure);
+    if (el.game) {
+      // A ResizeObserver on the panel itself fires when the layout changes for
+      // any reason, including the browser window being resized or rotated.
+      if (typeof ResizeObserver !== 'undefined') new ResizeObserver(remeasure).observe(el.game);
+    }
+    window.addEventListener('orientationchange', remeasure);
+    if (typeof ResizeObserver !== 'undefined') {
+      new ResizeObserver(remeasure).observe(el.grid.parentNode || el.grid);
+    }
 
     var params = new URLSearchParams(window.location.search);
     if (params.get('embed')) document.body.classList.add('embed');
@@ -559,6 +608,9 @@
     buildGrid();
     buildWordList();
     wireGrid();
+
+    if (el.game) el.game.hidden = false;
+    measureSoon();
 
     el.title.textContent = loaded.meta.title || 'Word Search';
     document.title = el.title.textContent + ' - Inclusee Games';
@@ -701,6 +753,8 @@
   root.IncluseeWordSearchGame = {
     state: function () { return state; },
     sourceList: sourceList,
+    fitLetters: fitLetters,
+    measureSoon: measureSoon,
     pickCell: pickCell,
     showMe: showMe,
     startAgain: startAgain,

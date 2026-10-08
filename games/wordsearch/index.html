@@ -54,7 +54,9 @@
 
       <p class="instruction" id="instruction">Tap a letter to start, then tap the last letter of the word.</p>
 
-      <table id="ws-grid" role="presentation"></table>
+      <div class="grid-scroll">
+        <div id="ws-grid" role="group" aria-label="Letter grid"></div>
+      </div>
 
       <div class="progress-bar" aria-hidden="true"><div class="filled" id="progress-fill" style="width: 0%"></div></div>
       <p class="progress-line" id="progress"></p>

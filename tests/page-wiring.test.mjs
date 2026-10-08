@@ -160,3 +160,39 @@ test('the games and the shared modules they use all attach a global in a browser
       page + ' only provided ' + globals.length + ' Inclusee globals: ' + globals.join(', '));
   }
 });
+
+test('the layout guards that keep the grids from bursting out of their panels are in place', () => {
+  // Three real regressions, all found by a resident, none visible to the Node
+  // logic tests: a grid sliding under the neighbouring panel; a page that
+  // refused to narrow on a phone; squares that could not shrink below an
+  // input's default width. These rules are what prevent all three.
+  const crosswordCss = readFileSync(join(root, 'games/crossword/css/crossword.css'), 'utf8');
+  const wordsearchCss = readFileSync(join(root, 'games/wordsearch/css/wordsearch.css'), 'utf8');
+  const crosswordHtml = readFileSync(join(root, 'games/crossword/index.html'), 'utf8');
+  const wordsearchHtml = readFileSync(join(root, 'games/wordsearch/index.html'), 'utf8');
+
+  // 1. Grid items must be allowed to shrink below their content.
+  for (const [name, css] of [['crossword', crosswordCss], ['wordsearch', wordsearchCss]]) {
+    assert.ok(css.includes('.layout > * { min-width: 0; }'),
+      name + ': the panels must be allowed to narrow with the screen');
+  }
+
+  // 2. The crossword squares must be able to shrink (the input inside them
+  //    otherwise fixes them at the width of a default text box).
+  const cellRule = crosswordCss.slice(crosswordCss.indexOf('.cell {'),
+                                      crosswordCss.indexOf('.cell-number') < 0 ? undefined : crosswordCss.length);
+  assert.ok(cellRule.includes('min-width: 0'),
+    'crossword: the squares must not be held open by the input width');
+
+  // 3. Both grids sit in a scroll wrapper, so even a very narrow screen keeps
+  //    tappable squares and scrolls instead of spilling.
+  for (const [name, html] of [['crossword', crosswordHtml], ['wordsearch', wordsearchHtml]]) {
+    assert.ok(html.includes('class="grid-scroll"'), name + ': the grid needs a scroll wrapper');
+  }
+
+  // 4. Neither grid may ever be asked for squares smaller than a fingertip.
+  for (const [name, css] of [['crossword', crosswordCss], ['wordsearch', wordsearchCss]]) {
+    assert.ok(css.includes('40px * var(--scale)'),
+      name + ': the smallest square allowed should be about 40px, scaled with the text size');
+  }
+});
