@@ -67,8 +67,15 @@
   border-radius: 0;
 }
 
-.cell.in-entry { background: var(--brand-tint); }
-.cell.is-selected { outline: 4px solid var(--brand); outline-offset: -4px; z-index: 2; }
+/* The answer being worked on is washed pale yellow; the one square being typed
+   in is the full brand yellow. Both carry navy letters, so both stay readable. */
+.cell.in-entry { background: var(--entry-fill); }
+.cell.is-selected {
+  background: var(--select-fill);
+  outline: 4px solid var(--ink);
+  outline-offset: -5px;
+  z-index: 2;
+}
 
 .cell-number {
   position: absolute;
@@ -99,6 +106,9 @@ input.letter {
 
 input.letter:focus { outline: none; }
 
+/* On the yellow highlight the letters stay navy, whatever the screen theme. */
+.cell.is-selected input.letter { color: var(--select-ink); }
+
 /* Both a class on the square (set directly by the game) and :has() are used,
    so an older in-app browser without :has() support still shows the circle. */
 .cell.wrong, .cell:has(input.wrong) { background: var(--bad-tint); }
@@ -114,18 +124,21 @@ input.letter.wrong { color: var(--bad); }
 
 /* --------------------------------------------------------- current clue */
 
+/* The clue being answered is the most important line on the screen, so it gets
+   the navy banner treatment: white on #002C40 is 14.64:1. */
 .current-clue {
   margin: 0.9rem 0 0;
   padding: 0.9rem 1rem;
   border-radius: var(--radius);
-  background: var(--brand-tint-strong);
-  color: var(--ink);
+  background: var(--brand-deep);
+  color: var(--on-dark);
+  border-left: 8px solid var(--green);
   font-size: 1.15rem;
   line-height: 1.4;
   min-height: 3.6rem;
 }
 
-.current-clue.empty { color: var(--ink-soft); font-style: italic; }
+.current-clue.empty { color: var(--on-dark); font-style: italic; }
 
 /* -------------------------------------------------------------- controls */
 
@@ -186,24 +199,24 @@ input.letter.wrong { color: var(--bad); }
   min-height: 0;
 }
 
-.clue:hover { background: var(--brand-tint); border-color: var(--line-strong); }
+.clue:hover { background: var(--brand-tint); border-color: var(--brand-text); }
 
 .clue.is-active {
-  background: var(--brand-tint-strong);
-  border-color: var(--brand);
+  background: var(--entry-fill);
+  border-color: var(--brand-text);
 }
 
 .clue-number {
   font-weight: 700;
-  color: var(--brand-text);
+  color: var(--brand-text);   /* 5.81:1 */
   min-width: 1.6em;
   text-align: right;
   flex: 0 0 auto;
 }
 
 .clue.done .clue-text { color: var(--ink-soft); }
-.clue.solved .clue-text { color: var(--good); }
-.clue.solved::after { content: " \2713"; color: var(--good); font-weight: 700; }
+.clue.solved .clue-text { color: var(--green-text); }
+.clue.solved::after { content: " \2713"; color: var(--green-text); font-weight: 700; }
 
 /* ------------------------------------------------- letter buttons (touch) */
 
@@ -227,7 +240,7 @@ body.show-keyboard #keyboard { display: flex; }
   font-weight: 700;
 }
 
-#keyboard .key:hover { background: var(--brand-tint); border-color: var(--brand); }
+#keyboard .key:hover { background: var(--brand-tint); border-color: var(--brand-text); }
 #keyboard .key.wide { flex-basis: 22%; }
 
 /* ------------------------------------------------------------------ states */
@@ -255,11 +268,12 @@ body.show-keyboard #keyboard { display: flex; }
   padding: 1.2rem;
   border-radius: var(--radius-lg);
   background: var(--good-tint);
-  border: 3px solid var(--good);
+  border: 3px solid var(--green-text);
+  border-top: 8px solid var(--green);      /* the bright green, used at size */
   text-align: center;
 }
 
-#end-panel h2 { color: var(--good); }
+#end-panel h2 { color: var(--green-text); }
 #end-panel p { font-size: 1.15rem; margin: 0.4rem 0 0; }
 
 #staff-notes {
@@ -272,6 +286,23 @@ body.show-keyboard #keyboard { display: flex; }
 }
 
 #staff-notes code { background: var(--brand-tint); padding: 0.1rem 0.3rem; border-radius: 4px; }
+
+/* A wide progress bar. The bright green is fine here: it is a large shape and
+   the sentence beside it carries the same information. */
+.progress-bar {
+  height: 0.85rem;
+  border-radius: 999px;
+  background: var(--brand-tint);
+  border: 2px solid var(--brand-text);
+  overflow: hidden;
+  margin: 0.5rem 0 0.2rem;
+}
+
+.progress-bar .filled {
+  height: 100%;
+  background: var(--green);
+  transition: width 0.2s ease;
+}
 
 /* ------------------------------------------------------------------ print */
 
@@ -330,5 +361,5 @@ body.show-keyboard #keyboard { display: flex; }
   background: var(--paper);
 }
 
-.streak-days .day.done { background: var(--good); border-color: var(--good); }
-.streak-days .day.today { outline: 3px solid var(--brand); outline-offset: 2px; }
+.streak-days .day.done { background: var(--green-text); border-color: var(--green-text); }
+.streak-days .day.today { outline: 3px solid var(--ink); outline-offset: 2px; }

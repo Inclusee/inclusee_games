@@ -424,6 +424,9 @@
       }
     }
     el.progress.textContent = correct + ' of ' + state.puzzle.entries.length + ' answers finished';
+    if (el.progressFill) {
+      el.progressFill.style.width = Math.round((correct / state.puzzle.entries.length) * 100) + '%';
+    }
     return { finished: finished, correct: correct };
   }
 
@@ -842,6 +845,7 @@
     el.downList = $('#down');
     el.currentClue = $('#current-clue');
     el.progress = $('#progress');
+    el.progressFill = $('#progress-fill');
     el.status = $('#status');
     el.live = $('#live');
     el.keyboard = $('#keyboard');

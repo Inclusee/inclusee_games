@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Inclusee Games</title>
 <meta name="description" content="Small, friendly games from Inclusee. Large print, no timers, no pressure.">
-<meta name="theme-color" content="#0b4f7a">
+<meta name="theme-color" content="#002C40">
 <meta name="robots" content="noindex">
 <link rel="icon" href="../assets/inclusee-logo.png">
 <link rel="stylesheet" href="shared/inclusee-theme.css">
@@ -16,12 +16,17 @@
   .game-card { display: flex; flex-direction: column; gap: 0.4rem; }
   .game-card h2 { margin: 0; }
   .game-card p { margin: 0; color: var(--ink-soft); }
+  /* --brand-text, not --brand: teal at 3.39:1 cannot carry white button text,
+     but the darker teal gives 5.81:1. */
   .game-card .play { margin-top: 0.8rem; align-self: flex-start; text-decoration: none; display: inline-block;
-                     background: var(--brand); color: #fff; border-radius: var(--radius); padding: 0.7rem 1.3rem; font-weight: 600; }
-  .game-card .play:hover { background: #0167ad; }
+                     background: var(--brand-text); color: #fff; border-radius: var(--radius);
+                     padding: 0.7rem 1.3rem; font-weight: 600; }
+  .game-card .play:hover { background: #175d53; }
   .badge { display: inline-block; font-size: 0.85rem; font-weight: 700; padding: 0.15rem 0.6rem;
-           border-radius: 999px; background: var(--warn-tint); color: var(--warn); }
-  .soon { opacity: 0.85; }
+           border-radius: 999px; background: var(--yellow-tint); color: var(--ink);
+           border: 2px solid var(--brand); }
+  .soon { opacity: 1; }
+  .game-card.soon h2 { color: var(--ink-soft); }
 </style>
 </head>
 <body>

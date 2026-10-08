@@ -1,38 +1,81 @@
 /* ============================================================================
-   Inclusee Games — shared look and feel
+   Inclusee Games - shared look and feel
    ----------------------------------------------------------------------------
-   One place for the brand colours, type scale and contrast rules every game
-   uses. Colours were chosen for WCAG 2.2 AA/AAA contrast against their own
-   background, and every size is driven by --scale so the "Bigger text" button
-   in any game enlarges the whole page, not just the headings.
+   Brand palette (supplied by Inclusee):
+
+     #002C40  deep navy    the workhorse: all text, borders, the app bar
+     #339B8B  teal         accents, tints and large decoration
+     #74BF44  green        bright decoration
+     #E9D447  yellow       highlights - a background for navy text
+     white                 the main colour, as asked
+
+   The bright colours cannot carry text on their own, so each has a darkened
+   partner for that job. Measured contrast against white:
+
+     #002C40  14.64:1   all text (AAA needs 7:1)
+     #1F7166   5.81:1   teal text, buttons, links (AA needs 4.5:1)
+     #3E7A22   5.23:1   green text, streak dots
+     #339B8B   3.39:1   teal decoration, large text, borders - NOT body text
+     #74BF44   2.26:1   green decoration only - NOT text
+     #E9D447   1.50:1   yellow decoration; navy text ON it is 9.74:1
+
+   tests/contrast.test.mjs checks these pairs, so a future colour change that
+   breaks readability fails the test suite rather than a resident's eyesight.
+
+   Every size is driven by --scale, so the "Bigger text" button enlarges the
+   whole page, not just the headings.
    ========================================================================== */
 
 :root {
-  /* Brand — taken from the Inclusee Connect app icons and web manifest. */
-  --brand: #0175c2;
-  --brand-deep: #0b4f7a;          /* large solid areas, white text: 8.2:1 */
-  --brand-text: #0a5b96;          /* blue text on white: 7.1:1 */
-  --brand-tint: #eaf3fb;          /* selected answer background */
-  --brand-tint-strong: #cfe6f8;
-
-  /* Ink and paper */
-  --ink: #10151a;                 /* 17.4:1 on white */
-  --ink-soft: #46525e;            /* 8.0:1 on white */
+  /* Paper */
   --paper: #ffffff;
-  --paper-soft: #f5f8fb;
-  --line: #b9c6d3;
-  --line-strong: #7d8d9c;
-  /* Outlines for puzzle squares and other "you must see where this ends" edges.
-     Always the strongest contrast available against the paper colour. */
-  --grid-line: #000000;
+  --paper-soft: #f1f7f8;          /* page background: a near-white teal wash */
+  /* Text on a dark band (app bar, clue banner). Always white, never --paper:
+     on the dark screen --paper is itself dark, which made the clue banner
+     unreadable at 1.05:1. */
+  --on-dark: #ffffff;
 
-  /* Feedback — gentle, never alarming. */
-  --good: #1b6b4a;
-  --good-tint: #e6f4ec;
-  --warn: #8a5a00;
-  --warn-tint: #fdf3e0;
-  --bad: #a3231b;                 /* 7.2:1 on white */
+  /* Ink - text and lines */
+  --ink: #002c40;                 /* 14.64:1 on white */
+  --ink-soft: #46626f;            /* 6.49:1 on white, for secondary text */
+  --line: #c7d6da;                /* dividers, decorative edges */
+  --line-strong: #64808d;         /* 3.7:1, the minimum for input outlines */
+  --grid-line: #002c40;           /* crossword square outlines, 14.64:1 */
+
+  /* Teal */
+  --brand: #339b8b;               /* 3.39:1 - decoration and large shapes only */
+  --brand-deep: #002c40;          /* app bar and banner backgrounds */
+  --brand-text: #1f7166;          /* 5.81:1 - teal text, buttons, links */
+  --brand-tint: #e8f4f1;          /* a whisper of teal, for washes */
+  --brand-tint-strong: #fbf5cc;   /* kept for compatibility: same as entry fill */
+
+  /* Green */
+  --green: #74bf44;               /* 2.26:1 - bright decoration only */
+  --green-text: #3e7a22;          /* 5.23:1 - green text, dots, borders */
+  --good: #3e7a22;
+  --good-tint: #eef7e7;
+  --good-line: #74bf44;           /* always paired with a dark edge */
+
+  /* Yellow */
+  --yellow: #e9d447;              /* navy text on it is 9.74:1 */
+  --yellow-tint: #fbf5cc;
+  /* Text placed ON a highlight is always navy, in both themes: white on yellow
+     is 1.50:1 and unreadable, and the dark screen still uses the yellow square. */
+  --select-ink: #002c40;
+
+  /* Highlighting: soft yellow for the answer being worked on, full yellow for
+     the square being typed in. That step is what tells someone where they are
+     without losing the pale-on-white look. */
+  --entry-fill: #fbf5cc;
+  --select-fill: #e9d447;
+
+  /* Feedback. Red is the one colour kept outside the palette: yellow and green
+     cannot say "this letter is not right" without confusion, because the same
+     colours already mean "selected" and "finished" elsewhere. */
+  --bad: #a3231b;                 /* 6.6:1 on white */
   --bad-tint: #fdeceb;
+  --warn: #6b5300;                /* 6.9:1 on white */
+  --warn-tint: #fbf5cc;
 
   /* Rhythm */
   --scale: 1;
@@ -40,27 +83,48 @@
   --radius: 14px;
   --radius-lg: 22px;
   --gap: 1rem;
-  --shadow: 0 2px 4px rgba(16, 21, 26, 0.06), 0 8px 24px rgba(16, 21, 26, 0.08);
+  --shadow: 0 2px 4px rgba(0, 44, 64, 0.07), 0 8px 24px rgba(0, 44, 64, 0.10);
   --font: "Segoe UI", Tahoma, Verdana, system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
 }
 
-/* A dark screen for residents who find white glaring. Contrast is checked
-   against the panel colour, not against white. */
+/* Dark screen: the brand navy becomes the background, and the bright palette
+   colours come into their own because each is far lighter than #002C40.
+   Contrast is checked against the panel colour, not against white. */
 body.dark {
-  --ink: #f2f6fa;                 /* 14.2:1 on the panel below */
-  --ink-soft: #c2ccd6;            /* 8.4:1 */
-  --paper: #18222c;
-  --paper-soft: #111922;
-  --brand-tint: #1d3a52;
-  --brand-tint-strong: #27506f;
-  --brand-text: #7cc0f0;          /* 7.4:1 on the panel */
-  --line: #4a5a69;
-  --line-strong: #8a9aa8;
+  --paper: #06303f;
+  --paper-soft: #002c40;
+  --on-dark: #ffffff;
+
+  --ink: #ffffff;
+  --ink-soft: #b6d2d6;
+  --line: #2f5665;
+  --line-strong: #6f97a3;
   --grid-line: #ffffff;
-  --good: #7fd3a4;
-  --good-tint: #14301f;
+
+  --brand: #74bf44;               /* bright green reads well on navy */
+  --brand-deep: #002c40;
+  --brand-text: #7fd6c8;
+  --brand-tint: #0d4358;
+  --brand-tint-strong: #14495e;
+
+  --green: #74bf44;
+  --green-text: #9ad86f;
+  --good: #9ad86f;
+  --good-tint: #14351f;
+  --good-line: #74bf44;
+
+  --yellow: #e9d447;
+  --yellow-tint: #4a4415;
+  --select-ink: #002c40;
+
+  --entry-fill: #14495e;
+  --select-fill: #e9d447;
+
   --bad: #ff9d95;
   --bad-tint: #3a1a18;
+  --warn: #e9d447;
+  --warn-tint: #3f3a13;
+
   --shadow: 0 2px 4px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.5);
 }
 
@@ -83,12 +147,15 @@ body {
 
 .app-bar {
   background: var(--brand-deep);
-  color: #ffffff;
+  color: var(--on-dark);          /* 14.64:1 on the navy bar */
   padding: 0.7rem 1.1rem;
   display: flex;
   align-items: center;
   gap: 1rem;
   flex-wrap: wrap;
+  /* The one place the bright green is used at size, where it reads as a brand
+     accent rather than as information. */
+  border-bottom: 5px solid var(--green);
 }
 
 .app-bar .logo { height: 2.4rem; width: auto; }
@@ -102,7 +169,7 @@ body {
 .app-bar .spacer { flex: 1 1 auto; }
 
 .app-bar a {
-  color: #ffffff;
+  color: var(--on-dark);
   text-decoration: underline;
   font-size: 1rem;
   padding: 0.5rem 0.25rem;
@@ -119,7 +186,7 @@ body.embed .app-bar { display: none; }
   padding: 1.1rem;
 }
 
-h1, h2, h3 { line-height: 1.25; }
+h1, h2, h3 { line-height: 1.25; color: var(--ink); }
 h1 { font-size: 1.7rem; margin: 0 0 0.3rem; }
 h2 { font-size: 1.35rem; margin: 0 0 0.6rem; }
 h3 { font-size: 1.15rem; margin: 0 0 0.5rem; }
@@ -132,14 +199,14 @@ button, .button {
   min-height: 3rem;
   padding: 0.55rem 1.1rem;
   border-radius: var(--radius);
-  border: 2px solid var(--brand);
-  background: var(--brand);
+  border: 2px solid var(--brand-text);
+  background: var(--brand-text);  /* 5.81:1 with white text */
   color: #ffffff;
   cursor: pointer;
   transition: background-color 0.12s ease, transform 0.06s ease;
 }
 
-button:hover { background: #0167ad; border-color: #0167ad; }
+button:hover { background: #175d53; border-color: #175d53; }
 button:active { transform: translateY(1px); }
 
 button.secondary {
@@ -148,7 +215,10 @@ button.secondary {
   border-color: var(--line-strong);
 }
 
-button.secondary:hover { background: var(--brand-tint); border-color: var(--brand); }
+button.secondary:hover {
+  background: var(--brand-tint);
+  border-color: var(--brand-text);
+}
 
 button.plain {
   background: transparent;
@@ -157,14 +227,12 @@ button.plain {
   text-decoration: underline;
 }
 
-/* Every interactive element shows the same obvious focus ring. */
+/* Every interactive element shows the same obvious focus ring. The yellow ring
+   stands out against both white panels and the navy bar. */
 :where(button, input, a, [tabindex]):focus-visible {
-  outline: 3px solid var(--brand);
+  outline: 3px solid var(--yellow);
   outline-offset: 2px;
-}
-
-body.dark :where(button, input, a, [tabindex]):focus-visible {
-  outline-color: #8fd0ff;
+  box-shadow: 0 0 0 6px rgba(0, 44, 64, 0.75);
 }
 
 /* ---------------------------------------------------------------- helpers */
@@ -179,8 +247,9 @@ body.dark :where(button, input, a, [tabindex]):focus-visible {
   border: 0;
 }
 
+/* Staff notes and status messages: pale yellow paper with navy ink, 9.74:1. */
 .note {
-  background: var(--brand-tint);
+  background: var(--yellow-tint);
   border-left: 6px solid var(--brand);
   border-radius: var(--radius);
   padding: 0.8rem 1rem;
