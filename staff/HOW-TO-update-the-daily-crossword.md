@@ -208,8 +208,9 @@ needed — there is no publishing step on the website side.
 
 Two things to know about HubSpot:
 
-- HubSpot remembers a copy of each file for a while. If you fix a typo and residents
-  still see the old text, that is why — it clears on its own within a day.
+- HubSpot remembers a copy of each file for a while. The games ask for the newest copy
+  every time, so a corrected puzzle normally appears straight away; if it does not, give
+  it a few minutes and reload.
 - Upload the file with the date as its name, for example `2026-10-03.txt`. The file
   name is what decides which day the puzzle appears.
 
@@ -261,7 +262,7 @@ game tried and what happened:
 | "Today's crossword isn't available just yet" | No puzzle file was found at all. Check the file is in the `puzzles` folder and the name looks exactly like `2026-10-03.txt` |
 | Residents see yesterday's puzzle | Today's file is missing, or the name has a typo — the game is falling back |
 | "This page could not fetch a puzzle file" | The puzzle folder is somewhere the page is not allowed to read — check `?staff=1` |
-| A fixed typo will not go away | HubSpot is still serving its saved copy — it clears within a day |
+| A fixed typo will not go away | Give it a few minutes and reload. The games always ask the server for the newest copy, but HubSpot can hold one briefly |
 | The heading shows the wrong date | The `#Date` line was left over from a copied file. The file name is correct |
 | "(sample puzzle)" next to the heading | No dated puzzle could be read, so the bundled sample is showing |
 | One of your clues is missing from the puzzle | That line was skipped. Run the checker to see which line and why |

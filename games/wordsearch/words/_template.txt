@@ -1,0 +1,31 @@
+#Title: Copy-me template
+#Date: 2026-10-03
+#Directions: easy
+#
+# ---------------------------------------------------------------------------
+#  HOW TO MAKE A NEW WORD SEARCH
+#   1. Copy this file into the words folder.
+#   2. Rename it with the date you want it to appear, e.g. 2026-10-10.txt
+#      (the game uses the file whose name matches today's date, and keeps using
+#       the most recent one if today's is missing, so it never shows a blank page)
+#   3. Replace the words below. One word per line.
+#   4. Save the file. That is the whole process.
+#
+#  TIPS FROM THE ACTIVITY TEAM
+#    - Use 8 to 12 words. More than that makes the letters small.
+#    - Keep words short where you can: 4 to 7 letters is the sweet spot.
+#    - Avoid pairs that look alike (SEED / SEEDS, POT / SPOT) - they are hard to
+#      tell apart once they are mixed in with filler letters.
+#    - Themes work well: seasons, the garden, the kitchen, local places, music,
+#      animals, holidays, the news.
+#    - Leave #Directions as easy unless you want a tougher puzzle.
+# ---------------------------------------------------------------------------
+
+SPRING
+SUMMER
+AUTUMN
+WINTER
+SUNSHINE
+UMBRELLA
+PUDDLE
+BREEZE

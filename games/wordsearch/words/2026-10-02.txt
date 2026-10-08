@@ -1,0 +1,40 @@
+#Title: In the Garden
+#Date: 2026-10-02
+#
+# ---------------------------------------------------------------------------
+#  INCLUSEE WORD SEARCH - word list
+#  To change today's puzzle, edit the list below the dotted line.
+#
+#  HOW IT WORKS (no coding needed):
+#    - One word per line. That is the whole job.
+#    - The grid is built for you: you never draw it, and you never say where
+#      a word goes.
+#    - Words are 3 to 12 letters. Anything with spaces or hyphens is tidied up,
+#      so "tea pot" becomes TEAPOT.
+#    - 8 to 12 words makes the nicest grid. Try not to use words that look the
+#      same as each other (SEED and SEEDS get confusing to tell apart).
+#    - Lines starting with # are notes for us and are never shown to players.
+#
+#  If a line has a mistake, the game skips that one word and shows a note in
+#  the corner saying what to fix. Nothing breaks.
+# ---------------------------------------------------------------------------
+
+#Directions: easy
+#
+#  Directions tells the game how the words are allowed to hide:
+#    easy   = across and down only                (the friendliest)
+#    normal = across, down and diagonally
+#    all    = the above, plus words running backwards
+#
+#----- EDIT FROM HERE ------------------------------------------------------
+
+ROSEMARY
+MULCH
+TROWEL
+GARDEN
+SEEDS
+WATERING
+SUNLIGHT
+COMPOST
+FLOWERS
+WEEDS

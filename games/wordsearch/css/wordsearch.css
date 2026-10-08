@@ -1,0 +1,196 @@
+/* ============================================================================
+   Inclusee Games - word search screen
+   ----------------------------------------------------------------------------
+   Same approach as the crossword: outlined squares so nobody has to guess where
+   one ends, yellow for what is being worked on, green for what is finished.
+   ========================================================================== */
+
+.page {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 1rem 1rem 2.5rem;
+}
+
+.game-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 1rem;
+  margin: 0.4rem 0 1rem;
+}
+
+.game-head h1 { margin: 0; }
+.date-line { color: var(--ink-soft); font-size: 1rem; margin: 0; }
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(320px, 1.05fr) minmax(280px, 1fr);
+  gap: 1rem;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .layout { grid-template-columns: 1fr; }
+}
+
+/* --------------------------------------------------------------- the grid */
+
+.grid-panel { padding: 1rem; }
+
+.instruction {
+  margin: 0 0 0.9rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius);
+  background: var(--brand-deep);
+  color: var(--on-dark);
+  border-left: 8px solid var(--green);
+  font-size: 1.15rem;
+  line-height: 1.4;
+  min-height: 3.6rem;
+}
+
+#ws-grid {
+  border-collapse: collapse;
+  margin: 0 auto;
+  background: var(--paper);
+  border: 4px solid var(--grid-line);
+  /* Never wider than the column it sits in: the letters must stay big. */
+  max-width: 100%;
+}
+
+#ws-grid td { padding: 0; border: 2px solid var(--grid-line); }
+
+#ws-grid .cell {
+  display: block;
+  width: 100%;
+  min-width: 2.1rem;
+  aspect-ratio: 1 / 1;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 0;
+  cursor: pointer;
+}
+
+#ws-grid .cell:focus-visible { outline: 4px solid var(--yellow); outline-offset: -4px; }
+
+/* The letters being selected right now. */
+#ws-grid .cell.preview { background: var(--entry-fill); }
+#ws-grid .cell.anchor { background: var(--select-fill); color: var(--select-ink); }
+
+/* Found: a soft green wash, with the letter still navy so it reads. */
+#ws-grid .cell.found {
+  background: var(--good-tint);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 3px var(--green-text);
+}
+
+/* ------------------------------------------------------- words to look for */
+
+.words-panel { padding: 1rem; }
+
+.word-list { list-style: none; margin: 0; padding: 0; }
+
+.word-list li { margin: 0 0 0.35rem; }
+
+.word-list .word {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  width: 100%;
+  text-align: left;
+  background: var(--paper);
+  color: var(--ink);
+  border: 2px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0.6rem 0.8rem;
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  min-height: 0;
+}
+
+.word-list .word:hover { background: var(--brand-tint); border-color: var(--brand-text); }
+.word-list .word.is-active { background: var(--entry-fill); border-color: var(--brand-text); }
+
+.word-list .word .tick { color: var(--green-text); font-weight: 700; }
+
+.word-list .word.done {
+  color: var(--ink-soft);
+  border-color: var(--green-text);
+  background: var(--good-tint);
+}
+
+.word-list .word.done .letters { text-decoration: line-through; }
+
+/* --------------------------------------------------------------- controls */
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.9rem 0 0;
+}
+
+.display-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin: 0.9rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 2px solid var(--line);
+}
+
+.progress-line { margin: 0.9rem 0 0; font-size: 1.05rem; color: var(--ink-soft); }
+
+/* ---------------------------------------------------------------- states */
+
+#loading, #error { text-align: center; padding: 2rem 1rem; font-size: 1.15rem; }
+
+#status {
+  margin: 0.9rem 0 0;
+  padding: 0.8rem 1rem;
+  border-radius: var(--radius);
+  background: var(--warn-tint);
+  color: var(--ink);
+  border-left: 6px solid var(--warn);
+  display: none;
+}
+
+#status.show { display: block; }
+
+#end-panel {
+  margin: 1rem 0 0;
+  padding: 1.2rem;
+  border-radius: var(--radius-lg);
+  background: var(--good-tint);
+  border: 3px solid var(--green-text);
+  border-top: 8px solid var(--green);
+  text-align: center;
+}
+
+#end-panel h2 { color: var(--green-text); }
+#end-panel p { font-size: 1.15rem; margin: 0.4rem 0 0; }
+
+#staff-notes {
+  margin: 1rem 0 0;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius);
+  background: var(--paper-soft);
+  border: 2px dashed var(--line-strong);
+  font-size: 0.95rem;
+}
+
+#staff-notes code { background: var(--brand-tint); padding: 0.1rem 0.3rem; border-radius: 4px; }
+
+@media print {
+  .app-bar, .controls, .display-options, #status, .game-head .date-line { display: none !important; }
+  body { background: #fff; }
+  #ws-grid .cell.found { box-shadow: none; background: #f2f2f2; }
+  #ws-grid .cell.preview, #ws-grid .cell.anchor { background: #fff; }
+}

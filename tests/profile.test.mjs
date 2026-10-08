@@ -22,7 +22,7 @@ test('a brand new player has no streak', () => {
   const s = profile.summary('', TODAY, profile.memoryStore());
   assert.equal(s.current, 0);
   assert.equal(s.finishedToday, false);
-  assert.match(s.text, /Finish a crossword to start a run/);
+  assert.match(s.text, /Finish today\u2019s puzzle to start a run/);
 });
 
 test('one day finished today is a run of one', () => {
@@ -178,4 +178,14 @@ test('a very long streak is reported plainly', () => {
   assert.equal(profile.currentStreak(dates, last), 100);
   assert.equal(profile.bestStreak(dates), 100);
   assert.match(profile.describeStreak(100, 100, true), /100 days in a row/);
+});
+
+test('the streak wording does not assume which game it is', () => {
+  // Shared by the crossword and the word search, so it must not say "crossword"
+  // on a word search screen.
+  for (const [current, best, today] of [[0, 0, false], [3, 5, true], [3, 5, false], [1, 1, true]]) {
+    const text = profile.describeStreak(current, best, today);
+    assert.doesNotMatch(text, /crossword/i, 'streak message says crossword: ' + text);
+    assert.doesNotMatch(text, /word search/i, 'streak message says word search: ' + text);
+  }
 });

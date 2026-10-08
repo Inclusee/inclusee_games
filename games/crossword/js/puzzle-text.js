@@ -102,39 +102,19 @@
     return { clues: clues, problems: problems, meta: meta };
   }
 
-  /** "2026-09-25" -> "Friday 25 September 2026" (no dependency on locale data) */
-  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December'];
-  var DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-
-  function prettyDate(iso) {
-    var m = String(iso || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (!m) return String(iso || '');
-    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
-    return DAYS[d.getUTCDay()] + ' ' + (+m[3]) + ' ' + MONTHS[+m[2] - 1] + ' ' + m[1];
-  }
-
-  function todayISO(now) {
-    var d = now ? new Date(now) : new Date();
-    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
-    return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
-  }
-
-  function shiftISO(iso, days) {
-    var m = String(iso).match(/^(\d{4})-(\d{2})-(\d{2})$/);
-    if (!m) return iso;
-    var d = new Date(Date.UTC(+m[1], +m[2] - 1, +m[3]));
-    d.setUTCDate(d.getUTCDate() + days);
-    var pad = function (n) { return (n < 10 ? '0' : '') + n; };
-    return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate());
+  // Dates live in the shared module, because the word search needs them too.
+  function dates() {
+    if (typeof IncluseeDates !== 'undefined') return IncluseeDates;
+    if (typeof require === 'function') return require('../../shared/dates.js');
+    throw new Error('The date helper must be loaded first.');
   }
 
   return {
     parse: parse,
     cleanAnswer: cleanAnswer,
-    prettyDate: prettyDate,
-    todayISO: todayISO,
-    shiftISO: shiftISO,
+    prettyDate: function (iso) { return dates().prettyDate(iso); },
+    todayISO: function (now) { return dates().todayISO(now); },
+    shiftISO: function (iso, days) { return dates().shiftISO(iso, days); },
     minWordLength: MIN_WORD,
     maxWordLength: MAX_WORD
   };

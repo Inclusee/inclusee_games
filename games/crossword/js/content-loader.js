@@ -33,9 +33,17 @@
   var LOOKBACK_DAYS = 21;
   var DEFAULT_SOURCE = 'puzzles/';
 
-  // In the browser these are other scripts on the page. In Node they are
-  // required, so the loader can be tested without a browser.
-  function helpers() {
+  // Date helpers are shared with every game; only the crossword needs the clue
+  // reader and grid builder, and those are looked up when a crossword is
+  // actually built. Requiring them up front meant the word search page - which
+  // has no clue reader - refused to load the loader at all.
+  function dates() {
+    if (typeof IncluseeDates !== 'undefined') return IncluseeDates;
+    if (typeof require === 'function') return require('../../shared/dates.js');
+    throw new Error('The date helper must be loaded first.');
+  }
+
+  function crosswordTools() {
     if (typeof IncluseePuzzleText !== 'undefined' && typeof IncluseeCrosswordGenerator !== 'undefined') {
       return { text: IncluseePuzzleText, grid: IncluseeCrosswordGenerator };
     }
@@ -45,10 +53,8 @@
         grid: require('./grid-generator.js')
       };
     }
-    throw new Error('The puzzle reader and grid builder must be loaded first.');
+    throw new Error('The clue reader and grid builder must be loaded first.');
   }
-
-  var h = helpers();
 
   function settings() {
     return (typeof window !== 'undefined' && window.INCLUSEE_CONFIG) || {};
@@ -102,7 +108,12 @@
    */
   async function fetchText(path) {
     try {
-      var res = await fetch(path, { cache: 'default' });
+      // Always revalidate. HubSpot sends a 14 day cache time on these files, so
+      // with the default setting a corrected puzzle - or a newly published one
+      // for a date staff edited - could sit unread on a resident's device for
+      // two weeks. Revalidating costs one small request and always shows the
+      // file that is actually on the server.
+      var res = await fetch(path, { cache: 'no-cache' });
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
           recordProblem(path, 'the server said "not allowed" (HTTP ' + res.status + ') \u2014 the file is probably not shared publicly');
@@ -142,7 +153,7 @@
     options = options || {};
     fetchProblems = [];
     unreachable = 0;
-    var today = options.today || h.text.todayISO();
+    var today = options.today || dates().todayISO();
     var query = new URLSearchParams(typeof window !== 'undefined' ? window.location.search : '');
     var wantedDate = query.get('date');
     var wantedPuzzle = query.get('puzzle');
@@ -165,7 +176,7 @@
     // proves unreachable, rather than repeating the same failure three weeks over.
     if (!wantedDate && unreachable < 2) {
       for (var back = 0; back <= LOOKBACK_DAYS; back++) {
-        var date = h.text.shiftISO(today, -back);
+        var date = dates().shiftISO(today, -back);
         var path = urlFor(date + '.txt');
         var found = await fetchText(path);
         if (found.text) return { text: found.text, source: path, date: date, exact: back === 0, daysOld: back };
@@ -216,38 +227,57 @@
   /** Loads, reads and builds a playable puzzle in one step. */
   async function loadPuzzle(options) {
     options = options || {};
+    var h = crosswordTools();
     var found = await loadPuzzleText(options);
     if (!found) {
       return { failed: true, unreachable: unreachable >= 2, problems: fetchProblems.slice() };
     }
 
     var parsed = h.text.parse(found.text);
-
-    // The file NAME decides which puzzle this is, not a #Date line inside it.
-    // Staff copy last week's puzzle as a starting point and often forget to
-    // change the header, and a stale date would both mislabel the puzzle and
-    // let one day's saved progress leak into another day's grid.
-    var date = found.date || parsed.meta.date || options.today || h.text.todayISO();
-    var dateMismatch = (found.date && parsed.meta.date && found.date !== parsed.meta.date)
-      ? { file: found.date, header: parsed.meta.date }
-      : null;
+    var resolved = resolveDate(found, parsed.meta, options.today || dates().todayISO());
 
     return {
-      puzzle: h.grid.generate(parsed.clues, { seed: date }),
+      puzzle: h.grid.generate(parsed.clues, { seed: resolved.date }),
       problems: parsed.problems,
       fetchProblems: fetchProblems.slice(),
       meta: parsed.meta,
-      date: date,
-      dateMismatch: dateMismatch,
-      today: options.today || h.text.todayISO(),
+      date: resolved.date,
+      dateMismatch: resolved.dateMismatch,
+      today: options.today || dates().todayISO(),
       source: found.source,
       isSample: !!found.fallback,
       daysOld: found.daysOld || 0
     };
   }
 
+  /**
+   * resolveDate(found, meta, today) -> { date, dateMismatch }
+   *
+   * One shared rule, used by every game: the FILE NAME decides which puzzle this
+   * is, never a #Date line inside it. Staff copy last week's file as a starting
+   * point and leave the old header behind; trusting it mislabels the puzzle and
+   * lets one day's saved progress leak into another day's grid.
+   */
+  function resolveDate(found, meta, today) {
+    var fileDate = found && found.date;
+    var headerDate = meta && meta.date;
+    return {
+      date: fileDate || headerDate || today,
+      dateMismatch: (fileDate && headerDate && fileDate !== headerDate)
+        ? { file: fileDate, header: headerDate }
+        : null
+    };
+  }
+
+  /** The same rule, with the file's own unreachability explained. */
+  function resolveSource(found) {
+    return found ? found.source : null;
+  }
+
   return {
     loadPuzzle: loadPuzzle,
+    resolveDate: resolveDate,
+    resolveSource: resolveSource,
     loadPuzzleText: loadPuzzleText,
     parseIndex: parseIndex,
     makeUrlFor: makeUrlFor,

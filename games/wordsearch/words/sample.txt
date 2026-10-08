@@ -1,0 +1,20 @@
+#Title: Around the Kitchen
+#Date: 2026-01-01
+#Directions: easy
+#
+# ---------------------------------------------------------------------------
+#  SAMPLE WORD SEARCH (sample.txt)
+#  The game only uses this file if it cannot find a dated one, so a missing week
+#  never leaves residents staring at an empty page. Update it whenever you like.
+# ---------------------------------------------------------------------------
+
+KETTLE
+TEAPOT
+SPOON
+SAUCEPAN
+FRIDGE
+OVEN
+APRON
+PANCAKE
+BISCUIT
+MARMALADE

@@ -26,42 +26,18 @@
 
   /* ---------------------------------------------------------------- random */
 
-  // xmur3 string hash -> mulberry32 PRNG. Small, fast, good enough, and
-  // reproducible across browsers and Node (no Math.random anywhere).
-  function stringHash(str) {
-    var h = 1779033703 ^ str.length;
-    for (var i = 0; i < str.length; i++) {
-      h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
-      h = (h << 13) | (h >>> 19);
-    }
-    return function () {
-      h = Math.imul(h ^ (h >>> 16), 2246822507);
-      h = Math.imul(h ^ (h >>> 13), 3266489909);
-      h ^= h >>> 16;
-      return h >>> 0;
-    };
+  // Shared with the word search, so there is one implementation to trust.
+  function sharedRandom() {
+    if (typeof IncluseeSeededRandom !== 'undefined') return IncluseeSeededRandom;
+    if (typeof require === 'function') return require('../../shared/seeded-random.js');
+    throw new Error('The random number helper must be loaded first.');
   }
 
-  function makeRng(seed) {
-    var next = stringHash(String(seed));
-    var a = next();
-    return function () {
-      a |= 0;
-      a = (a + 0x6D2B79F5) | 0;
-      var t = Math.imul(a ^ (a >>> 15), 1 | a);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
+  var rngTools = sharedRandom();
 
-  // Random-start deterministic shuffle (Fisher-Yates).
-  function shuffle(list, rng) {
-    for (var i = list.length - 1; i > 0; i--) {
-      var j = Math.floor(rng() * (i + 1));
-      var t = list[i]; list[i] = list[j]; list[j] = t;
-    }
-    return list;
-  }
+  function makeRng(seed) { return rngTools.makeRng(seed); }
+
+  function shuffle(list, rng) { return rngTools.shuffle(list, rng); }
 
   /* ----------------------------------------------------------------- board */
 

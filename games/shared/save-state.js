@@ -92,9 +92,34 @@
     return result;
   }
 
+  /**
+   * createRecord(date, details) / readRecord(saved, date)
+   *
+   * The same idea as a save, for games that do not store a grid of letters - the
+   * word search stores which words have been found. Sharing the version and date
+   * gate means one place decides what "this save belongs to this puzzle" means.
+   */
+  function createRecord(date, details) {
+    var record = { version: VERSION, date: String(date || '') };
+    details = details || {};
+    for (var key in details) {
+      if (Object.prototype.hasOwnProperty.call(details, key)) record[key] = details[key];
+    }
+    return record;
+  }
+
+  function readRecord(saved, date) {
+    if (!saved || saved.version !== VERSION || saved.date !== String(date || '')) {
+      return { accepted: false };
+    }
+    return { accepted: true, details: saved };
+  }
+
   return {
     createSave: createSave,
     readSave: readSave,
+    createRecord: createRecord,
+    readRecord: readRecord,
     blank: blank,
     version: VERSION,
     blankCharacter: BLANK

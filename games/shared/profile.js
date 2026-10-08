@@ -101,9 +101,10 @@
    */
   function describeStreak(current, best, finishedToday) {
     if (current === 0) {
+      // "puzzle", not "crossword": this module is shared with the word search.
       return finishedToday
         ? 'That is your first day. Come back tomorrow to start a run.'
-        : 'Finish a crossword to start a run of days.';
+        : 'Finish today\u2019s puzzle to start a run of days.';
     }
     var run = current === 1 ? '1 day in a row' : current + ' days in a row';
     if (finishedToday) {
@@ -112,7 +113,7 @@
       return run + '. ' + praise + (best > current ? ' Your best is ' + best + ' days.' : '');
     }
     var keep = current >= 2 ? ' of ' + current + ' days' : '';
-    return 'Finish today\'s crossword to keep your run' + keep + ' going. Your best is ' +
+    return 'Finish today\u2019s puzzle to keep your run' + keep + ' going. Your best is ' +
       Math.max(best, current) + ' days.';
   }
 

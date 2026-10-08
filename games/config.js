@@ -38,5 +38,16 @@ window.INCLUSEE_CONFIG = {
   // simply the folder plus the file name. {name} = 2026-09-25.txt,
   // {date} = 2026-09-25. Example:
   //   'https://example.org/download.aspx?path={date}.txt'
-  puzzleSourceTemplate: null
+  puzzleSourceTemplate: null,
+
+  // --------------------------------------------------------------------------
+  // The word search keeps its word lists in the same HubSpot area, in its own
+  // folder. Create the folder there and upload the .txt files from
+  // games/wordsearch/words/. Until it exists, the game quietly uses the copies
+  // that ship beside it, so the page is never empty.
+  // --------------------------------------------------------------------------
+  wordSearchSource: 'https://6860964.fs1.hubspotusercontent-ap1.net/hubfs/6860964/Inclusee%20Theme%202025/Games/wordsearch/words/',
+
+  // Optional, same idea as puzzleSourceTemplate above.
+  wordSearchTemplate: null
 };
