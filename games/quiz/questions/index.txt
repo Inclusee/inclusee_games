@@ -1,0 +1,13 @@
+# ---------------------------------------------------------------------------
+#  questions/index.txt - the list of quizzes on the server
+#
+#  THIS FILE IS OPTIONAL. The game looks for a file named after today's date
+#  (2026-10-08.txt for the 8th of October 2026), and if it is not there works
+#  backwards up to three weeks. Add the dates here instead if you would rather
+#  load a batch a month ahead - the game picks the newest date that is not in
+#  the future.
+#
+#  One date per line. Anything after the date is a title for your own reference.
+# ---------------------------------------------------------------------------
+
+2026-10-08  Gentle and Familiar

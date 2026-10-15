@@ -1,0 +1,62 @@
+#Title: Gentle and Familiar
+#Date: 2026-10-08
+#
+# ---------------------------------------------------------------------------
+#  INCLUSEE QUIZ - question file
+#  To change today's quiz, edit the questions below the dotted line.
+#
+#  HOW IT WORKS (no coding needed):
+#    - One question, then its choices, then a BLANK LINE for the next one.
+#    - The FIRST choice under a question is the right answer. The game shuffles
+#      the choices on screen, so residents cannot work that out.
+#    - Numbered choices are fine: "1) Canberra" or "#1 Canberra" both work, and
+#      the number is not shown to the players.
+#    - Anything from 2 to 5 choices, but 3 to 4 is what most people answer best.
+#    - Aim for 6 to 12 questions, and keep the choices about the same length:
+#      one much longer choice reading like "it must be this one".
+#    - Trivia and gentle reminiscence work nicely. Two that make everyone smile
+#      beat ten hard ones.
+#
+#  If a question has a mistake, the game skips just that one and leaves a note
+#  for staff in the ?staff=1 view. Nothing breaks.
+# ---------------------------------------------------------------------------
+
+What is the capital city of Australia?
+Canberra
+Sydney
+Melbourne
+
+Which animal carries its young in a pouch?
+Kangaroo
+Elephant
+Zebra
+
+How many days are there in a week?
+Seven
+Six
+Eight
+
+What colour is the Inclusee logo?
+Green
+Blue
+Red
+
+Which one is a number?
+Eleven
+Elephant
+Egg
+
+How many legs does a spider have?
+Eight
+Six
+Ten
+
+What is the opposite of night?
+Day
+Dawn
+Sun
+
+Which letter of the alphabet comes after T?
+U
+S
+V

@@ -1,0 +1,33 @@
+#Title: Music and Movies (sample)
+#Date: 2026-01-01
+#
+# ---------------------------------------------------------------------------
+#  SAMPLE QUIZ (sample.txt)
+#  The game only uses this file if it cannot find a dated one, so a missing week
+#  never leaves residents staring at an empty page. Update it whenever you like.
+# ---------------------------------------------------------------------------
+
+How many strings does a violin have?
+Four
+Five
+Six
+
+Who sang "Sunday will never change"?
+Elvis Presley
+Dean Martin
+Frank Sinatra
+
+Which film made "May the Force be with you" famous?
+Star Wars
+Gone with the Wind
+Titanic
+
+What are the keys on a piano called?
+Keys
+Strings
+Hammers
+
+Animated mice and famous quiz shows aside, what is the name of the famous Australian opera house?
+Sydney Opera House
+Melbourne Concert Hall
+Brisbane Stadium

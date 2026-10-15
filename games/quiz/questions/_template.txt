@@ -1,0 +1,42 @@
+#Title: Copy-me template
+#Date: 2026-10-09
+#
+# ---------------------------------------------------------------------------
+#  HOW TO MAKE A NEW QUIZ
+#   1. Copy this file into the questions folder.
+#   2. Rename it with the date you want it to appear, e.g. 2026-10-15.txt
+#      (the game uses the file whose name matches today's date, and keeps using
+#       the most recent one if today's is missing, so it never shows a blank page)
+#   3. Replace the questions below.
+#   4. Save the file. That is the whole process.
+#
+#  THE ONE RULE YOU CANNOT FORGET
+#    The FIRST choice under a question is always the right answer. Write your
+#    questions like this, and the game shuffles the choices on screen.
+#
+#     What is the capital city of Australia?
+#     Canberra          <- the right answer, because it is first
+#     Sydney
+#     Melbourne
+#
+#  TIPS FROM THE ACTIVITY TEAM
+#    - Use 6 to 12 questions. More than that and people drop off.
+#    - 3 or 4 choices each, and about the same length of wording.
+#    - Write them so one or two are easy, then a couple with a thought.
+#    - Trivia from the local paper, the garden, the music they grew up with.
+# ---------------------------------------------------------------------------
+
+What is the capital city of France?
+Paris
+Lyon
+Nice
+
+How many days in June?
+Thirty
+Thirty-one
+Twenty-eight
+
+Which of these is a bird?
+Emu
+Emu's friend
+Snake

@@ -55,5 +55,19 @@ window.INCLUSEE_CONFIG = {
   wordSearchSource: 'https://6860964.fs1.hubspotusercontent-ap1.net/hubfs/6860964/Inclusee%20Theme%202025/Games/Wordsearch/Words/',
 
   // Optional, same idea as puzzleSourceTemplate above.
-  wordSearchTemplate: null
+  wordSearchTemplate: null,
+
+  // --------------------------------------------------------------------------
+  // The quiz keeps its question lists in the same HubSpot area, in its own
+  // folder. Create this exact folder and upload the .txt files from
+  // games/quiz/questions/. Until it exists the game quietly uses the copies
+  // that ship beside it, so the page is never empty.
+  //
+  // HubSpot file paths are case-sensitive (proved with the word search on
+  // 2026-10-10): a folder name in the wrong case does not error, it silently
+  // serves the copy that ships with the game. Check this spelling carefully.
+  // --------------------------------------------------------------------------
+  quizSource: 'https://6860964.fs1.hubspotusercontent-ap1.net/hubfs/6860964/Inclusee%20Theme%202025/Games/Quiz/Questions/',
+
+  quizTemplate: null
 };

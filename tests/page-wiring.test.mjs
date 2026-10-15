@@ -25,7 +25,8 @@ const root = join(here, '..');
 
 const PAGES = [
   'games/crossword/index.html',
-  'games/wordsearch/index.html'
+  'games/wordsearch/index.html',
+  'games/quiz/index.html'
 ];
 
 /** A minimal stand-in for the browser bits the games touch while loading. */
